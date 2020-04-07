@@ -72,7 +72,8 @@ def upload_file(filename):
     The file will (should) be available under the `request.files` key,
     where `request` is a flask object provided to the route
     '''
-    return ''
+    the_file = request.files['the_file']
+    return ('', 204)
 
 @app.route('/files/process/<string:_id>', methods=['GET'])
 def process_file(_id):
@@ -98,7 +99,7 @@ def process_file(_id):
     net_flows_bytes = subprocess.check_output('argus -F argus.conf -r example_capture.pcap -w - | ra -r - -n -F ra.conf -Z b')
     net_flows_bytesIO = BytesIO(new_flow_bytes)
     net_flows = pd.read_csv(net_flows_bytesio)
-    return '', 204
+    return ('', 204)
 
 @app.route('/files.json', methods=['GET'])
 def list_files():
@@ -146,4 +147,4 @@ def resolve_alert(_id):
     database yet pretend that it is deleted? Welcome to Ashley Madison. Else, how
     else could you "undelete" something?
     '''
-    return '', 204
+    return ('', 204)
