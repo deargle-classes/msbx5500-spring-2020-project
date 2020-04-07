@@ -111,9 +111,6 @@
 
 {% block script %}
 <script type="text/javascript">
-  const inputElement = document.getElementById("file-input");
-  const uploadButton = document.getElementById('btn-upload')
-
   function handleErrors(response) {
       if (!response.ok) {
           throw Error(response.statusText);
@@ -144,11 +141,12 @@
       },
 
       upload_file: function() {
+        let inputElement = document.getElementById("file-input");
         let the_file = inputElement.files[0]
-        const formData = new FormData();
-        formData.append('the_file', file)
+        let formData = new FormData();
+        formData.append('the_file', the_file)
 
-        fetch(`/uploads/${file.name}`, {
+        fetch(`/files/${the_file.name}`, {
           method: 'POST',
           body: formData
         })
