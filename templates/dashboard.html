@@ -1,0 +1,228 @@
+{% extends 'layouts/default.html' %}
+
+{% block content %}
+  <div class='container'>
+    <h1 class='display-1'>A Very Nice Dashboard to Do All The Things</h1>
+
+    <p class='lead'>The future is <em>somewhat yours!</em></p>
+
+    <p>Includes out-of-the-box:
+      <ul>
+        <li><a href='https://getbootstrap.com/docs/4.4/getting-started/introduction/'>Bootstrap v4.4, along with its javascript</a></li>
+        <li><a href='https://vuejs.org/v2/guide/index.html'>Vue.js v2.6.11</a></li>
+        <li><a href='https://jquery.com/'>jQuery v3.4.1</a></li>
+      </ul>
+    </p>
+
+    <h1>Use-cases</h1>
+
+    <p>Files (pcap files)</p>
+    <ul>
+      <li>Upload new</li>
+      <li>display all</li>
+      <li>"process" a single file</li>
+      <li>Delete a file?</li>
+    </ul>
+
+    <p>Alerts</p>
+    <ul>
+      <li>Display all</li>
+      <li>Delete one</li>
+      <li>Delete all?</li>
+    </ul>
+
+
+  {% raw %}
+  <div id='app'>
+    <h1>Alerts</h1>
+
+    <table class='table'>
+      <thead>
+        <tr>
+          <th>Src Bytes</th>
+          <th>Dst IP</th>
+          <th>Protocol</th>
+          <th>Timestamp</th>
+          <th>Some Other Stuff</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="alert in alerts" :key="alert._id">
+          <td>{{ alert.src_bytes }}</td>
+          <td>Foo</td>
+          <td>Bar</td>
+          <td>Bim</td>
+          <td>Baz</td>
+          <td>
+            <button
+              type="button"
+              v-bind:data-id="alert._id"
+              v-bind:id="'btn-alert-resolve-' + alert._id"
+              class='btn btn-success btn-alert-resolve'
+              v-on:click='resolve_alert'
+              autocomplete="off">Resolve</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h1>Files</h1>
+
+    <div class='mb-4'>
+      <input type="file" id="file-input">
+      <button id='btn-upload' v-on:click='upload_file'>Upload, Do It Now.</button>
+    </div>
+
+    <table class='table'>
+      <thead>
+        <tr>
+          <th>Src IP</th>
+          <th>Dst IP</th>
+          <th>Protocol</th>
+          <th>Timestamp</th>
+          <th>Some Other Stuff</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="file in files" :key="file._id">
+          <td>{{ file.filename }}</td>
+          <td>Foo</td>
+          <td>Bar</td>
+          <td>Bim</td>
+          <td>Baz</td>
+          <td>
+            <button
+              type='button'
+              v-bind:data-id="file._id"
+              v-bind:id="'btn-file-process-' + file._id"
+              v-on:click="process_file"
+              class='btn btn-primary btn-file-process'
+              autocomplete="off">Process</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  {% endraw %}
+  </div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+  const inputElement = document.getElementById("file-input");
+  const uploadButton = document.getElementById('btn-upload')
+
+  function handleErrors(response) {
+      if (!response.ok) {
+          throw Error(response.statusText);
+      }
+      return response;
+  }
+
+  app = new Vue({
+    el: '#app',
+    data: {
+      alerts: [],
+      files: []
+    },
+    //https://vuejs.org/v2/api/#methods
+    methods: {
+      ///////////////
+      // files
+      ///////////////
+      get_files: function () {
+        fetch(`/files.json`)
+        .then(handleErrors)
+        .then((response)=>{
+          return response.json()
+        })
+        .then((result)=>{
+          this.files = result
+        })
+      },
+
+      upload_file: function() {
+        let the_file = inputElement.files[0]
+        const formData = new FormData();
+        formData.append('the_file', file)
+
+        fetch(`/uploads/${file.name}`, {
+          method: 'POST',
+          body: formData
+        })
+        .then(handleErrors)
+        .then( (response) => {
+          this.get_files()
+        })
+        .catch((error)=>{
+          console.log('Something terrible happened:', error)
+        })
+      },
+
+      process_file: function(event){
+        // TODO: disable button after it has been pressed once
+        // TODO: put up status notification until this function reaches a certain
+        //  promise state
+
+        let button = $(event.target) // makes `button` a jQuery object, cool but not
+                                     // strictly necessary
+        let _id = event.target.dataset.id;
+        fetch(`/files/process/${_id}`)
+        .then(handleErrors)
+        .then( (response) => {
+          return response.json()
+        })
+        .then( (result) => {
+          this.get_alerts() // this should trigger an update of the files list...
+        })
+        .catch( (error) => {
+          console.error(error)
+        })
+      },
+
+      /////////////////
+      // alerts
+      /////////////////
+      get_alerts: function() {
+        fetch(`/alerts.json`)
+        .then(handleErrors)
+        .then( (response) => {
+          return response.json()
+        })
+        .then( (result) => {
+          this.alerts = result
+        })
+        .catch( (error) => {
+          console.error(error)
+        })
+      },
+
+      resolve_alert: function(event) {
+        let _id = event.target.dataset.id;
+        // TODO: ?? enable "resolving" status indicator?
+        fetch(`/alerts/${_id}`, {
+          method: 'DELETE'
+        })
+        .then(handleErrors)
+        .then( (result) => {
+          this.get_alerts()
+          // TODO: ?? remove in-progress status indicator?
+        })
+        .catch( (error) => {
+          console.error(error)
+        })
+      }
+    },
+    // https://vuejs.org/v2/api/#mounted
+    mounted: function() {
+      this.$nextTick(function() {
+        // fetch initial data...
+        this.get_files()
+        this.get_alerts()
+      })
+    }
+  })
+</script>
+{% endblock %}

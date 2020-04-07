@@ -1,0 +1,20 @@
+version: '3'
+services:
+    web:
+        build: .
+        ports:
+        - "80:5000"
+        volumes:
+            - .:/app
+        command: flask run
+        environment:
+          - DATABASE_URL=postgres://psql:5432/postgres
+          - MONGODB_URI=mongodb://mongo:27017/mongodb
+        stdin_open: true
+        tty: true
+    psql:
+        image: postgres:latest
+        environment:
+            - POSTGRES_HOST_AUTH_METHOD=trust
+    mongo:
+        image: mongo:latest
