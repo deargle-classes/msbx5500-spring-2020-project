@@ -97,8 +97,8 @@ def process_file(_id):
             shell=True)
     '''
     net_flows_bytes = subprocess.check_output('argus -F argus.conf -r example_capture.pcap -w - | ra -r - -n -F ra.conf -Z b')
-    net_flows_bytesIO = BytesIO(new_flow_bytes)
-    net_flows = pd.read_csv(net_flows_bytesio)
+    net_flows_bytesIO = BytesIO(net_flows_bytes)
+    net_flows = pd.read_csv(net_flows_bytesIO)
     return ('', 204)
 
 @app.route('/files.json', methods=['GET'])
