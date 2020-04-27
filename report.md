@@ -1,6 +1,6 @@
 <table align="center"><tr><td align="center" width="9999">
 
-<img src="/images/Leeds Logo.jpg" align="center" width="150" alt="Project icon">
+<img src="/images/Leeds Logo.jpg" align="center" width="500" alt="Project icon" >
 
 # MSBX-5500 Spring 2020 
 
