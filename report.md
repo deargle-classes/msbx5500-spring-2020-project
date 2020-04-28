@@ -26,14 +26,16 @@ For this project we will use the [CTU-13 dataset](https://www.stratosphereips.or
 
 ### Data Understanding
 #### CTU-13 dataset
-The [CTU-13 dataset](https://www.stratosphereips.org/datasets-ctu13) consists of thirteen scenarios of different botnet samples captured in pcap files. For out use case we will be using the bidieractional netflow files which have the follwing features that will be used to train our model:
+The [CTU-13 dataset](https://www.stratosphereips.org/datasets-ctu13) consists of thirteen scenarios of different botnet samples captured in pcap files. For our use case we will be using the bidirectional netflow files which have the following features that will be used to train our model:
 
 | StartTime | Dur | Proto | SrcAddr | Sport | Dir | DstAddr | Dport | State | sTos | dTos | TotPkts | TotBytes | SrcBytes | Label |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | 
 | 2011/08/10 09:46:53.047277 | 3550.182373 | udp | 212.50.71.179 | 39678 | <-> | 147.32.84.229 | 13363 | CON | 0 | 0 | 12 | 875 | 473 | flow=Background-UDP-Established |
 
 #### Kddcup99 dataset
-https://datahub.io/machine-learning/kddcup99
+The [Kddcup99](https://datahub.io/machine-learning/kddcup99) dataset is a 10% subsample of data used at the 1999 KDD Cup, used to distinguish between "bad" connections (attacks/instrusions) and "good" (normal) connections.
+
+The Kddcup99 dataset consists of 42 features, which can be seen [here](http://kdd.ics.uci.edu/databases/kddcup99/kddcup.names)
 
 ### Data Preparation
 
