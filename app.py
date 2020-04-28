@@ -5,6 +5,7 @@ from flask_pymongo import PyMongo
 import gridfs
 import os
 import subprocess
+import datetime
 from io import BytesIO
 import pandas as pd
 
@@ -40,14 +41,24 @@ def handle_invalid_usage(error):
 ########
 # get psql db up. quickstart here: https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db = SQLAlchemy(app)
 
 class Alert(db.Model):
     '''
     look at documentation for flask_sqlalchemy and for SQLAlchemy
     '''
-    id = db.Column(db.Integer, primary_key=True)
-
+    id = db.Column(db.Integer, primary_key=True, nullable= False)
+    srcaddr= db.Column(db.String(39), nullable = False)
+    dstaddr=db.Column(db.String(39), nullable = False)
+    pkts=db.Column(db.Integer)
+    octets=db.Column(db.Integer)
+    srcport=db.Column(db.Integer, nullable = False)
+    dstport=db.Column(db.Integer, nullable = False)
+    prot=db.Column(db.Integer)
+    timestamp=db.Column(db.DateTime)
+    reso=db.Column(db.Integer, nullable = False, default = 0)
+    time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())   
 ###########
 ### MONGODB
 ###########
@@ -130,11 +141,10 @@ def list_alerts():
 
     See "resolve_alert" function. Perhaps filter to only return alerts that are
     not flagged as "resolved."
-    '''
-    import random
-    choices = [1,2,3,4,5]
-    alerts = [{'_id':i,
-                'src_bytes':random.choice(choices)} for i in range(10)]
+    ''' 
+    
+    alerts = [{'_id':i.id, 'n_packet': i.pkts,
+                'src_bytes':i.octets, 'src_addr':i.srcaddr, 'dst_addr': i.dstaddr, 'Protocol':i.prot,'Timestamp':i.timestamp } for i in Alert.query.filter_by(reso=0).all() ]
     return jsonify(alerts)
 
 @app.route('/alerts/<string:_id>', methods=['DELETE'])
@@ -147,4 +157,7 @@ def resolve_alert(_id):
     database yet pretend that it is deleted? Welcome to Ashley Madison. Else, how
     else could you "undelete" something?
     '''
+    update=Alert.query.filter_by(id = _id).first()
+    update.reso=1
+    db.session.commit()
     return ('', 204)

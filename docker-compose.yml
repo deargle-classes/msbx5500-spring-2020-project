@@ -8,13 +8,13 @@ services:
             - .:/app
         command: flask run
         environment:
-          - DATABASE_URL=postgres://psql:5432/postgres
+          - DATABASE_URL=postgres://postgres:$POSTGRES_PASSWORD@psql:5432/postgres
           - MONGODB_URI=mongodb://mongo:27017/mongodb
         stdin_open: true
         tty: true
     psql:
         image: postgres:latest
         environment:
-            - POSTGRES_HOST_AUTH_METHOD=trust
+            - POSTGRES_PASSWORD
     mongo:
         image: mongo:latest

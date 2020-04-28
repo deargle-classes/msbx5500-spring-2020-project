@@ -40,20 +40,22 @@
       <thead>
         <tr>
           <th>Src Bytes</th>
+	  <th>Packets</th>
+	  <th>Src IP</th>
           <th>Dst IP</th>
           <th>Protocol</th>
           <th>Timestamp</th>
-          <th>Some Other Stuff</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="alert in alerts" :key="alert._id">
           <td>{{ alert.src_bytes }}</td>
-          <td>Foo</td>
-          <td>Bar</td>
-          <td>Bim</td>
-          <td>Baz</td>
+	  <td>{{alert.n_packet}}</td>
+          <td>{{alert.src_addr}}</td>
+          <td>{{alert.dst_addr}}</td>
+          <td>{{alert.Protocol}}</td>
+          <td>{{alert.Timestamp}}</td>
           <td>
             <button
               type="button"
