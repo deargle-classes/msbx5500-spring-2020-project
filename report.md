@@ -32,7 +32,7 @@ The CTU-13 dataset consists of thirteen scenarios of different botnet samples ca
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | 
 | 2011/08/10 09:46:53.047277 | 3550.182373 | udp | 212.50.71.179 | 39678 | <-> | 147.32.84.229 | 13363 | CON | 0 | 0 | 12 | 875 | 473 | flow=Background-UDP-Established |
 
-### Data Preperation
+### Data Preparation
 
 ### Modeling
 
