@@ -48,7 +48,9 @@ The data consists of compressed TCP dump data from normal and malicious network 
 * **U2R**: unauthorized access to local superuser (root) privileges, e.g., various "buffer overflow" attacks;
 * **probing**: surveillance and other probing, e.g., port scanning.
 
-For our use case we will be using this data to build a model to determine whether or not a connection is malicious. (?)
+For our use case we will be using this data to build a second model to determine whether or not a connection is malicious.
+
+Each netflow will be ran against both models, leading to two predictions. The CTU-13 model will be able to predict whether the netflow is a botnet according to the CTU-13 scenario used, while the Kddcup99model will be able to predict whether it's one of 8 different malicious classes.
 
 ### Data Preparation
 
