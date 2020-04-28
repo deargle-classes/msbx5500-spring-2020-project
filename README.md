@@ -5,6 +5,8 @@ Use this file to describe the _repository_.
 
 Final project for MSBX5500. Using the given CTU-13 dataset, create a web application allowing a user to upload a pcap file, parses it into netflow records, classify the traffic as is_bot or not, and allow the user to resolve alerts generated from the machine learning model on that uploaded traffic file.
 
+#### [Project Proposal Document](https://github.com/deargle-classes/msbx5500-spring-2020/blob/master/project-proposal.md)
+
 Due: 4/30/20
 
 ### Deliverables
