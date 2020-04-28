@@ -41,14 +41,14 @@ The Kddcup99 dataset consists of 42 features, which can be seen [here](http://kd
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 0 | tcp | http | SF | 181 | 5450 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 | 8 | 0.00 | 0.00 | 0.00 | 0.00 | 1.00 | 0.00 | 0.00 | 9 | 9 | 1.00 | 0.00 | 0.11 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | normal |
 
-The data consists of compressed TCP dump data from network traffic on a simulated US Air Force LAN. Each connection is labeled as "normal" or an "attack" and "attacks" must fall under one specific category:
-Attacks categories:
+The data consists of compressed TCP dump data from normal and malicious network traffic on a simulated U.S. Air Force LAN. Each connection is labeled as "normal" or an "attack" and "attacks" must fall under one of the four specific categories below:
+
 * **DOS**: denial-of-service, e.g. syn flood;
 * **R2L**: unauthorized access from a remote machine, e.g. guessing password;
 * **U2R**: unauthorized access to local superuser (root) privileges, e.g., various "buffer overflow" attacks;
 * **probing**: surveillance and other probing, e.g., port scanning.
 
-For our use case:.... ?
+For our use case we will be using this data to build a model to determine whether or not a connection is malicious. (?)
 
 ### Data Preparation
 
