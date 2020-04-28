@@ -14,14 +14,38 @@ I dunno, just make it nice.
 
 ### Project Overview
 
-Final project for MSBX5500. Using the given CTU-13 dataset, create a web application allowing a user to upload a pcap file, classify the traffic as malicious or benign, and allow the user to resolve alerts generated from the machine learning model on that uploaded traffic file.
+Final project for MSBX5500. Using the given CTU-13 dataset, create a web application allowing a user to upload a pcap file, parses it into netflow records, classify the traffic as is_bot or not, and allow the user to resolve alerts generated from the machine learning model on that uploaded traffic file.
 
 Due: 4/30/20
 
 ### Deliverables
-- [CRISP-DM Report](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/report.md)
+* A single class github repository
+* A heroku deployment of the final repo for each class member
+* A markdown writeup within the final git repository which follows CRIPSP-DM format
+  - [CRISP-DM Report](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/report.md)
+* Cyber-security sudents: in class presentation
 
 ### High-Level Design
+
+#### Modules
+* Python function that parses pcaps into netflows
+* Single code file that trains the models themselves, based on any arbitrary ctu-13 dataset. outputs the models, in pickled format
+	* `models = [model for model in pickle.load(os.listdir('models'))]``
+	* multiple models --
+		* different datasets
+		* different classifiers for a single given dataset
+	* start with a single dataset, two classifiers
+	* flask code which loads pickled models
+* CRISP-DM report on the performance of the chosen models
+	* feature importances
+	* talks about all of this code in the deployment
+* a way for the user to upload pcap files to a mongodb
+* a way to store and display alerts if netflows surpass a certain malware-likelihood threshold/cutoff with psql
+
+* Professor will provide
+	* javascript to interact with skeleton routes that y'all will fill out for the app
+	* flask route shells
+	* a docker container which includes argus preinstalled
 
 ### Quickstart
 
