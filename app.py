@@ -59,7 +59,8 @@ class Alert(db.Model):
     prot=db.Column(db.String(7))
     timestamp=db.Column(db.DateTime)
     duration=db.Column(db.Float)
-    scrbytes=db.Column(db.Integer)
+    srcbytes=db.Column(db.Integer)
+    prob=db.Column(db.Float)
     reso=db.Column(db.Integer, nullable = False, default = 0)
     time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())
     
@@ -144,15 +145,25 @@ def process_file(_id):
     path = 'https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/pickle.pkl?raw=true'
     with open(path, 'rb') as f:
         model = pkl.load(f)
-    y_score = model.predict_proba(net_flows)
     
     # Feed netflows to second model [todo]
     
     # Compare output to some threshold
-    threshold = .1
-    for row in y_score:
-        if row > threshold:
-            new_alert = Alert(row)
+    threshold = .7
+    for i in net_flows.index:
+        y_score = model.predict_proba(net_flows.iloc[i,:])
+        if y_score > threshold:    
+            new_alert = Alert(timestamp=net_flows.iloc[i,0],
+            duration=net_flows.iloc[i,1],
+            prot=net_flows.iloc[i,2],
+            srcaddr=net_flows.iloc[i,3],
+            srcport=net_flows.iloc[i,4],
+            dstaddr=net_flows.iloc[i,6],
+            dstport=net_flows.iloc[i,7], 
+            pkts=net_flows.iloc[i,11], 
+            octets=net_flows.iloc[i,12], 
+            srcbytes=net_flows.iloc[i,13],
+            prob=y_score)
             db.add(new_alert)
         # If row is above threshold, commit that row to the DB
         db.commit()
@@ -191,7 +202,8 @@ def list_alerts():
     '''
 
     alerts = [{'_id':i.id, 'n_packet': i.pkts,
-                'src_bytes':i.octets, 'src_addr':i.srcaddr, 'dst_addr': i.dstaddr, 'Protocol':i.prot,'Timestamp':i.timestamp } for i in Alert.query.filter_by(reso=0).all() ]
+                'src_bytes':i.srcbytes, 'src_addr':i.srcaddr, 'dst_addr': i.dstaddr, 'Protocol':i.prot,
+                'Timestamp':i.timestamp, 'Probability':i.prob } for i in Alert.query.filter_by(reso=0).all() ]
     return jsonify(alerts)
 
 @app.route('/alerts/<string:_id>', methods=['DELETE'])
