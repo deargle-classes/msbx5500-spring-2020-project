@@ -25,7 +25,7 @@ except:
 
 #%%
 net_flows = net_flows.dropna()
-X = net_flows.iloc[:,0:13]
+X = net_flows.iloc[:,0:14]
 y = net_flows['Target'] = net_flows['Label'].str.startswith('flow=From-Botnet').astype(int)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.5, random_state=42)
 
