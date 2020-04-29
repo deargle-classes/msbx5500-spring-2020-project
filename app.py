@@ -55,8 +55,10 @@ class Alert(db.Model):
     octets=db.Column(db.Integer)
     srcport=db.Column(db.Integer, nullable = False)
     dstport=db.Column(db.Integer, nullable = False)
-    prot=db.Column(db.Integer)
+    prot=db.Column(db.String(7))
     timestamp=db.Column(db.DateTime)
+    duration=db.Column(db.Float)
+    scrbytes=db.Column(db.Integer)
     reso=db.Column(db.Integer, nullable = False, default = 0)
     time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())   
 ###########
