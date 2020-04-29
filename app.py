@@ -8,6 +8,12 @@ import subprocess
 import datetime
 from io import BytesIO
 import pandas as pd
+import pickle as pkl
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
 
 app = Flask(__name__)
 # add cross-origin allow to all routes
@@ -131,7 +137,12 @@ def process_file(_id):
     net_flows_bytesIO = BytesIO(net_flows_bytes)
     net_flows = pd.read_csv(net_flows_bytesIO)
     return ('', 204)
-
+    
+    net_flows = net_flows.dropna()
+    with open(os.getenv('MODEL_NAME'), 'rb') as f:
+    model = pkl.load(f)
+    predictions = model.predict_proba(net_flows)
+    
 @app.route('/files.json', methods=['GET'])
 def list_files():
     '''
