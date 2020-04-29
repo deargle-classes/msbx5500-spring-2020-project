@@ -142,7 +142,10 @@ def process_file(_id):
             shell=True)
     net_flows_bytesIO = BytesIO(net_flows_bytes)
     net_flows = pd.read_csv(net_flows_bytesIO)
+    net_flows = net_flows.dropna()
+    X = net_flows.iloc[:,0:13]
     
+
     # Feed netflow(s) to model
     path = './pickle.pkl'
     with open(path, 'rb') as f:
@@ -151,7 +154,7 @@ def process_file(_id):
     # Feed netflows to second model [todo]
     
     # Compare output to some threshold
-    threshold = .7
+    threshold = .1
     for i in net_flows.index:
         y_score = model.predict_proba(net_flows.iloc[i,:])
         if y_score > threshold:    
