@@ -8,7 +8,7 @@ import subprocess
 import datetime
 from io import BytesIO
 import pandas as pd
-from bson.objectid import ObjectId 
+from bson.objectid import ObjectId
 import pickle as pkl
 import sklearn
 
@@ -62,7 +62,7 @@ class Alert(db.Model):
     timestamp=db.Column(db.DateTime)
     reso=db.Column(db.Integer, nullable = False, default = 0)
     time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())
-    
+
 ###########
 ### MONGODB
 ###########
@@ -131,26 +131,29 @@ def process_file(_id):
 
 		db.commit()
     '''
-    
+
     # Get file to process and parse to netflows
     file = fs.get(ObjectId(_id)).read()
     net_flows_bytes = subprocess.check_output('argus -F argus.conf -r - -w - | ra -r - -n -F ra.conf -Z b',
             input=file,
             shell=True)
+
     net_flows_bytesIO = BytesIO(net_flows_bytes)
     net_flows = pd.read_csv(net_flows_bytesIO)
+    net_flows = net_flows.drop('Label', axis=1)
     net_flows = net_flows.dropna()
+
     X = net_flows.iloc[:,0:13]
-    
+
 
     # Feed netflow(s) to model
     path = './pickle.pkl'
     with open(path, 'rb') as f:
         model = pkl.load(f)
     y_score = model.predict_proba(X)
-    
+
     # Feed netflows to second model [todo]
-    
+
     # Compare output to some threshold
     threshold = .1
     for row in y_score:
@@ -159,7 +162,7 @@ def process_file(_id):
             db.add(new_alert)
         # If row is above threshold, commit that row to the DB
         db.commit()
-    
+
     return ('', 204)
 
 @app.route('/files.json', methods=['GET'])
@@ -173,10 +176,10 @@ def list_files():
     Note: The direct return of a return from a gridfs query is not
     json-serializable because it includes _dadgum files_.
     '''
-	
+
     files = list(fs.find())
-    return jsonify([{'filename': file.name,'_id': str(file._id)} for file in files])   
-	
+    return jsonify([{'filename': file.name,'_id': str(file._id)} for file in files])
+
 
 ############
 ## Alerts
