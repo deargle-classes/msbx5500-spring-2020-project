@@ -168,10 +168,10 @@ def list_files():
     Note: The direct return of a return from a gridfs query is not
     json-serializable because it includes _dadgum files_.
     '''
-    files = [{'_id':file,
-                'filename':'file_{}.pcap'.format(file)
-            } for file in [1,2,3,4,5]]
-    return jsonify(files)
+	
+    files = list(fs.find())
+    return jsonify([{'filename': file.name,'_id': file._id} for file in files])   
+	
 
 ############
 ## Alerts
