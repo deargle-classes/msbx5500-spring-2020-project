@@ -157,7 +157,7 @@ def process_file(_id):
     # Compare output to some threshold
     threshold = .1
     for row in y_score:
-        if row > threshold:
+        if row[0] > threshold:
             new_alert = Alert(row)
             db.add(new_alert)
         # If row is above threshold, commit that row to the DB
