@@ -140,7 +140,7 @@ def process_file(_id):
     
     net_flows = net_flows.dropna()
     with open(os.getenv('MODEL_NAME'), 'rb') as f:
-    model = pkl.load(f)
+    	model = pkl.load(f)
     predictions = model.predict_proba(net_flows)
     
 @app.route('/files.json', methods=['GET'])
