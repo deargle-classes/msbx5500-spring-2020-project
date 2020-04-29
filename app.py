@@ -131,7 +131,7 @@ def process_file(_id):
     '''
     
     # Get file to process and parse to netflows
-    file = fs.get(ObjectId(_id)).read()
+    file = fs.get(_id).read()
     net_flows_bytes = subprocess.check_output('argus -F argus.conf -r - -w - | ra -r - -n -F ra.conf -Z b',
             input=file,
             shell=True)
