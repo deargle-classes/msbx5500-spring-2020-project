@@ -56,6 +56,14 @@ Each netflow will be ran against both models, leading to two predictions. The CT
 
 ### Modeling
 
+#### CTU-13 model
+
+The model build for the CTU-13 dataset was
+
+#### Kddcup99 model
+
+The model used for the Kddcup dataset was
+
 ### Model Evaluation
   
 ### Deployment
