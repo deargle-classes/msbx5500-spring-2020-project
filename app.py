@@ -170,7 +170,7 @@ def list_files():
     '''
 	
     files = list(fs.find())
-    return jsonify([{'filename': file.name,'_id': file._id} for file in files])   
+    return jsonify([{'filename': file.name,'_id': str(file._id)} for file in files])   
 	
 
 ############
