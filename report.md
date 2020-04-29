@@ -75,4 +75,5 @@ Deployment should be hosted through Heroku, using a Docker image to register the
 TODO:
 - Probably need more info above
 - Planning, monitoring, review of deployment results?
+- Over/Undersample data in pickle
 
