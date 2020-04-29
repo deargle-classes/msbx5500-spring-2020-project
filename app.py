@@ -139,13 +139,15 @@ def process_file(_id):
             shell=True)
     net_flows_bytesIO = BytesIO(net_flows_bytes)
     net_flows = pd.read_csv(net_flows_bytesIO)
-    #net_flows = net_flows.dropna()
+    net_flows = net_flows.dropna()
+    X = net_flows.iloc[:,0:13]
+    
 
     # Feed netflow(s) to model
     path = './pickle.pkl'
     with open(path, 'rb') as f:
         model = pkl.load(f)
-    y_score = model.predict_proba(net_flows)
+    y_score = model.predict_proba(X)
     
     # Feed netflows to second model [todo]
     
