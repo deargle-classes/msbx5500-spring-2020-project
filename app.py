@@ -8,6 +8,7 @@ import subprocess
 import datetime
 from io import BytesIO
 import pandas as pd
+# May need this if not imported in PyMongo: from bson.objectid import ObjectId 
 
 app = Flask(__name__)
 # add cross-origin allow to all routes
@@ -60,7 +61,8 @@ class Alert(db.Model):
     duration=db.Column(db.Float)
     scrbytes=db.Column(db.Integer)
     reso=db.Column(db.Integer, nullable = False, default = 0)
-    time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())   
+    time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())
+    
 ###########
 ### MONGODB
 ###########
@@ -78,6 +80,13 @@ def dashboard():
 ############
 ## Files
 #############
+'''
+the code below should only allow pcap files
+'''
+#allowed_extensions = {'pcap'}
+#def allowed_file(filename):
+#    return '.' in filename and \
+#        filename.rsplit('.',1)[1].lower() in allowed_extensions
 
 @app.route('/files/<path:filename>', methods=['POST'])
 def upload_file(filename):
@@ -86,6 +95,7 @@ def upload_file(filename):
     where `request` is a flask object provided to the route
     '''
     the_file = request.files['the_file']
+    mongo.save_file(filename, the_file)
     return ('', 204)
 
 @app.route('/files/process/<string:_id>', methods=['GET'])
@@ -106,12 +116,47 @@ def process_file(_id):
 
     e.g., you will need to do:
         net_flows_bytes = subprocess.check_output('argus -F argus.conf -r - -w - | ra -r - -n -F ra.conf -Z b',
-            input=file_with__id_that_you_fetch_from_gridfs,
+            input=fs.find_one({"filename": "lisa.txt"}),
             shell=True)
     '''
-    net_flows_bytes = subprocess.check_output('argus -F argus.conf -r example_capture.pcap -w - | ra -r - -n -F ra.conf -Z b')
+    '''
+    From GOOGLE DOC:
+    def process_file():
+	Parse a pcap into netflows
+	Ask a model to evaluate (make predictions for) each netflow record
+	For each netflow_plus_prediction:
+		If netflow_plus_prediction[prediction] > threshold:
+			New_alert = Alert(netflow_plus_prediction)
+			db.add(new_alert)
+
+		db.commit()
+    '''
+    
+    # Get file to process and parse to netflows
+    file = fs.get(_id).read()
+    net_flows_bytes = subprocess.check_output('argus -F argus.conf -r - -w - | ra -r - -n -F ra.conf -Z b',
+            input=file,
+            shell=True)
     net_flows_bytesIO = BytesIO(net_flows_bytes)
     net_flows = pd.read_csv(net_flows_bytesIO)
+    
+    # Feed netflow(s) to model
+    path = 'https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/pickle.pkl?raw=true'
+    with open(path, 'rb') as f:
+        model = pkl.load(f)
+    y_score = model.predict_proba(net_flows)
+    
+    # Feed netflows to second model [todo]
+    
+    # Compare output to some threshold
+    threshold = .1
+    for row in y_score:
+        if row > threshold:
+            new_alert = Alert(row)
+            db.add(new_alert)
+        # If row is above threshold, commit that row to the DB
+        db.commit()
+    
     return ('', 204)
 
 @app.route('/files.json', methods=['GET'])
@@ -143,8 +188,8 @@ def list_alerts():
 
     See "resolve_alert" function. Perhaps filter to only return alerts that are
     not flagged as "resolved."
-    ''' 
-    
+    '''
+
     alerts = [{'_id':i.id, 'n_packet': i.pkts,
                 'src_bytes':i.octets, 'src_addr':i.srcaddr, 'dst_addr': i.dstaddr, 'Protocol':i.prot,'Timestamp':i.timestamp } for i in Alert.query.filter_by(reso=0).all() ]
     return jsonify(alerts)
