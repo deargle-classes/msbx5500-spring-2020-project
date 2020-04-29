@@ -139,7 +139,8 @@ def process_file(_id):
             shell=True)
     net_flows_bytesIO = BytesIO(net_flows_bytes)
     net_flows = pd.read_csv(net_flows_bytesIO)
-    
+    #net_flows = net_flows.dropna()
+
     # Feed netflow(s) to model
     path = './pickle.pkl'
     with open(path, 'rb') as f:
