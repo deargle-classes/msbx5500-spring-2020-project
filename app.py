@@ -139,7 +139,7 @@ def process_file(_id):
     net_flows = pd.read_csv(net_flows_bytesIO)
     
     # Feed netflow(s) to model
-    path = 'https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/pickle.pkl'
+    path = 'https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/pickle.pkl?raw=true'
     with open(path, 'rb') as f:
         model = pkl.load(f)
     y_score = model.predict_proba(net_flows)
