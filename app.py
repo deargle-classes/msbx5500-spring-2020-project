@@ -58,7 +58,7 @@ class Alert(db.Model):
     prot=db.Column(db.Integer)
     timestamp=db.Column(db.DateTime)
     reso=db.Column(db.Integer, nullable = False, default = 0)
-    time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())   
+    time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())
 ###########
 ### MONGODB
 ###########
@@ -76,6 +76,13 @@ def dashboard():
 ############
 ## Files
 #############
+'''
+the code below should only allow pcap files
+'''
+#allowed_extensions = {'pcap'}
+#def allowed_file(filename):
+#    return '.' in filename and \
+#        filename.rsplit('.',1)[1].lower() in allowed_extensions
 
 @app.route('/files/<path:filename>', methods=['POST'])
 def upload_file(filename):
@@ -84,6 +91,7 @@ def upload_file(filename):
     where `request` is a flask object provided to the route
     '''
     the_file = request.files['the_file']
+    mongo.save_file(filename, the_file)
     return ('', 204)
 
 @app.route('/files/process/<string:_id>', methods=['GET'])
@@ -106,6 +114,18 @@ def process_file(_id):
         net_flows_bytes = subprocess.check_output('argus -F argus.conf -r - -w - | ra -r - -n -F ra.conf -Z b',
             input=file_with__id_that_you_fetch_from_gridfs,
             shell=True)
+    '''
+    '''
+    From GOOGLE DOC:
+    def process_file():
+	Parse a pcap into netflows
+	Ask a model to evaluate (make predictions for) each netflow record
+	For each netflow_plus_prediction:
+		If netflow_plus_prediction[prediction] > threshold:
+			New_alert = Alert(netflow_plus_prediction)
+			db.add(new_alert)
+
+		db.commit()
     '''
     net_flows_bytes = subprocess.check_output('argus -F argus.conf -r example_capture.pcap -w - | ra -r - -n -F ra.conf -Z b')
     net_flows_bytesIO = BytesIO(net_flows_bytes)
@@ -141,8 +161,8 @@ def list_alerts():
 
     See "resolve_alert" function. Perhaps filter to only return alerts that are
     not flagged as "resolved."
-    ''' 
-    
+    '''
+
     alerts = [{'_id':i.id, 'n_packet': i.pkts,
                 'src_bytes':i.octets, 'src_addr':i.srcaddr, 'dst_addr': i.dstaddr, 'Protocol':i.prot,'Timestamp':i.timestamp } for i in Alert.query.filter_by(reso=0).all() ]
     return jsonify(alerts)
