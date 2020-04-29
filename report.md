@@ -56,6 +56,14 @@ Each netflow will be ran against both models, leading to two predictions. The CT
 
 ### Modeling
 
+#### CTU-13 model
+
+The model build for the CTU-13 dataset was
+
+#### Kddcup99 model
+
+The model used for the Kddcup dataset was
+
 ### Model Evaluation
   
 ### Deployment
@@ -67,4 +75,5 @@ Deployment should be hosted through Heroku, using a Docker image to register the
 TODO:
 - Probably need more info above
 - Planning, monitoring, review of deployment results?
+- Over/Undersample data in pickle
 

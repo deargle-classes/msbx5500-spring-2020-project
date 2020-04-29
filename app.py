@@ -8,6 +8,7 @@ import subprocess
 import datetime
 from io import BytesIO
 import pandas as pd
+# May need this if not imported in PyMongo: from bson.objectid import ObjectId 
 
 app = Flask(__name__)
 # add cross-origin allow to all routes
@@ -59,6 +60,7 @@ class Alert(db.Model):
     timestamp=db.Column(db.DateTime)
     reso=db.Column(db.Integer, nullable = False, default = 0)
     time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())
+    
 ###########
 ### MONGODB
 ###########
@@ -112,7 +114,7 @@ def process_file(_id):
 
     e.g., you will need to do:
         net_flows_bytes = subprocess.check_output('argus -F argus.conf -r - -w - | ra -r - -n -F ra.conf -Z b',
-            input=file_with__id_that_you_fetch_from_gridfs,
+            input=fs.find_one({"filename": "lisa.txt"}),
             shell=True)
     '''
     '''
@@ -127,9 +129,32 @@ def process_file(_id):
 
 		db.commit()
     '''
-    net_flows_bytes = subprocess.check_output('argus -F argus.conf -r example_capture.pcap -w - | ra -r - -n -F ra.conf -Z b')
+    
+    # Get file to process and parse to netflows
+    file = fs.get(_id).read()
+    net_flows_bytes = subprocess.check_output('argus -F argus.conf -r - -w - | ra -r - -n -F ra.conf -Z b',
+            input=file,
+            shell=True)
     net_flows_bytesIO = BytesIO(net_flows_bytes)
     net_flows = pd.read_csv(net_flows_bytesIO)
+    
+    # Feed netflow(s) to model
+    path = 'https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/pickle.pkl?raw=true'
+    with open(path, 'rb') as f:
+        model = pkl.load(f)
+    y_score = model.predict_proba(net_flows)
+    
+    # Feed netflows to second model [todo]
+    
+    # Compare output to some threshold
+    threshold = .1
+    for row in y_score:
+        if row > threshold:
+            new_alert = Alert(row)
+            db.add(new_alert)
+        # If row is above threshold, commit that row to the DB
+        db.commit()
+    
     return ('', 204)
 
 @app.route('/files.json', methods=['GET'])
