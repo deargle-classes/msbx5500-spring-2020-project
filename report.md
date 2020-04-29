@@ -60,3 +60,6 @@ Each netflow will be ran against both models, leading to two predictions. The CT
   
 ### Deployment
 
+Each team member shall deploy the final repo individually.
+Deployment should be hosted through Heroku, using a Docker image to register the image for Heroku deployment.
+
