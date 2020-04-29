@@ -8,7 +8,9 @@ import subprocess
 import datetime
 from io import BytesIO
 import pandas as pd
-# May need this if not imported in PyMongo: from bson.objectid import ObjectId 
+from bson.objectid import ObjectId 
+import pickle as pkl
+import sklearn
 
 app = Flask(__name__)
 # add cross-origin allow to all routes
@@ -131,7 +133,7 @@ def process_file(_id):
     '''
     
     # Get file to process and parse to netflows
-    file = fs.get(_id).read()
+    file = fs.get(ObjectId(_id)).read()
     net_flows_bytes = subprocess.check_output('argus -F argus.conf -r - -w - | ra -r - -n -F ra.conf -Z b',
             input=file,
             shell=True)
@@ -139,7 +141,7 @@ def process_file(_id):
     net_flows = pd.read_csv(net_flows_bytesIO)
     
     # Feed netflow(s) to model
-    path = 'https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/pickle.pkl?raw=true'
+    path = './pickle.pkl'
     with open(path, 'rb') as f:
         model = pkl.load(f)
     y_score = model.predict_proba(net_flows)
