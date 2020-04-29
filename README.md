@@ -43,3 +43,5 @@ major dependencies such as argus and sklearn)
 
 ### Quickstart
 "just use docker-compose and run it with a command like ____, yo." Except more formal and stuff
+
+	1. Enter command: `docker-compose run web python init_psql_db.py` or it won't work
