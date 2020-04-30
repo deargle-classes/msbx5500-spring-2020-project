@@ -126,7 +126,7 @@ fs = gridfs.GridFS(mongo.db) # direct access to the gridfs file system
 
 @app.route('/')
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', **thresholds)
 
 
 
