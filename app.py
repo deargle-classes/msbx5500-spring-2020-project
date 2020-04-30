@@ -109,7 +109,8 @@ class Alert(db.Model):
     TotPkts=db.Column(db.Integer)
     TotBytes=db.Column(db.Integer)
     SrcBytes=db.Column(db.Integer)
-    Proba=db.Column(db.Float)
+    Proba_CTU=db.Column(db.Float)
+    Proba_KDD=db.Column(db.Float)
     reso=db.Column(db.String(1), server_default = '0')
     time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())
 
@@ -243,10 +244,10 @@ def process_file(_id):
     except InvalidUsageError as e:
         error = e
 
-    net_flows['Proba_KDD']=y_score_kdd[:,1]
+    net_flows['Proba_KDD']=y_score_kdd[:0]
     # Compare output to some threshold
     threshold = .0001
-    to_alerts=net_flows.loc[net_flows['Proba_KDD']>threshold,:]
+    to_alerts=net_flows.loc[net_flows['Proba_KDD'].astype(float)>threshold,:]
     to_alerts = to_alerts.head()
     to_alerts.to_sql(name='alertsDb', con=db.engine, if_exists = 'append', index=False)
 
