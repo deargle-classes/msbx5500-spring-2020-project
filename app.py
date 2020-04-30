@@ -204,8 +204,8 @@ def _threshold_filter_predictions(predictions):
     '''
     alert_me = {}
     for model, proba in predictions.items():
-        if proba > thresholds[model]:
-            alert_me['{}_threshold'.format(model)] = proba
+        if proba > thresholds['{}_threshold'.format(model)]:
+            alert_me[model] = proba
     if not alert_me:
         return None
     return alert_me
