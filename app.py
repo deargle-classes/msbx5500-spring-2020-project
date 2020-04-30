@@ -109,8 +109,7 @@ class Alert(db.Model):
     TotPkts=db.Column(db.Integer)
     TotBytes=db.Column(db.Integer)
     SrcBytes=db.Column(db.Integer)
-    Proba_CTU=db.Column(db.Float)
-    Proba_KDD=db.Column(db.Float)
+    Predictions=db.Column(db.String)
     reso=db.Column(db.String(1), server_default = '0')
     time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())
 
@@ -127,6 +126,8 @@ fs = gridfs.GridFS(mongo.db) # direct access to the gridfs file system
 @app.route('/')
 def dashboard():
     return render_template('dashboard.html')
+
+
 
 ############
 ## Files
@@ -151,6 +152,63 @@ def upload_file(filename):
 
 class InvalidUsageError(Exception):
     pass
+
+threshold = 0.001
+thresholds = {
+    'kddcup_threshold': 0.001, # use later
+    'ctu_13_threshold': 0.001 # use later
+}
+
+# load ctu-13 model
+path = './pickle.pkl'
+with open(path, 'rb') as f:
+    model_ctu_13 = pkl.load(f)
+
+# load kddcup model
+path = './LogisticRegression.pkl'
+with open(path, 'rb') as f:
+    model_kddcup = pkl.load(f)
+
+def _get_ctu_13_predictions(net_flows):
+    net_flows= net_flows.iloc[:,0:13]
+    return model_ctu_13.predict_proba(net_flows)[:,1]
+
+def _get_kddcup99_predictions(net_flows):
+    '''
+    should return the output of predict_proba, nparray
+    '''
+
+    #do Kddcup predictions
+    feature_names = [str(col) for col in net_flows.columns]
+
+    error = None
+    y_score_kdd = None
+    predict_me = {feature_name: None for feature_name in original_dataset_features}
+
+    # override the features we actually care about with ones submitted by the form.
+    for feature_name in feature_names:
+       # submitted_val = net_flows[feature_name]
+       # if not submitted_val:
+           #raise InvalidUsageError('missing feature {}'.format(feature_name))
+        predict_me[feature_name] = net_flows[feature_name]
+
+    predict_me = pd.DataFrame(predict_me)
+    y_score_kdd = model_kddcup.predict_proba(predict_me)[:,1]
+    return y_score_kdd
+
+def _threshold_filter_predictions(predictions):
+    '''
+    prediction: a dictionary (row) of predictions, one column (key) for each prediction
+
+    Create a new series storing predictions which surpass some arbitrary threshold.
+    '''
+    alert_me = {}
+    for model, proba in predictions.items():
+        if proba > thresholds[model]:
+            alert_me['{}_threshold'.format(model)] = proba
+    if not alert_me:
+        return None
+    return alert_me
 
 @app.route('/files/process/<string:_id>', methods=['GET'])
 def process_file(_id):
@@ -197,58 +255,22 @@ def process_file(_id):
     net_flows = net_flows.drop('Label', axis=1)
     net_flows = net_flows.fillna(0)
 
-    # Feed netflow(s) to model
-    path = './pickle.pkl'
-    with open(path, 'rb') as f:
-        model = pkl.load(f)
+    y_score_ctu = _get_ctu_13_predictions(net_flows)
+    y_score_kddcup = _get_kddcup99_predictions(net_flows)
 
-    # Feeding KDD in
-    path = './LogisticRegression.pkl'
-    with open(path, 'rb') as f:
-        model2 = pkl.load(f)
+    predictions = []
+    for i in net_flows.shape[0]:
+        _single_net_flow_predictions = {
+            'ctu_13': y_score_ctu[i],
+            'kddcup': y_score_kddcup[i]
+        }
+        _thresholded_predictions = _threshold_filter_predictions(single_net_flow_predictions)
+        predictions.append(_thresholded_predictions)
 
-    # Feed netflows to second model [todo]
-    net_flows= net_flows.iloc[:,0:13]
-    y_score_ctu = model.predict_proba(net_flows)
-    net_flows['Proba_CTU']=y_score_ctu[:,1]
-    # Compare output to some threshold
-    threshold = .0001
-    to_alerts=net_flows.loc[net_flows['Proba_CTU']>threshold,:]
-    to_alerts = to_alerts.head()
-    to_alerts.to_sql(name='alertsDb', con=db.engine, if_exists = 'append', index=False)
+    net_flows['Predictions'] = predictions
+    to_alerts = net_flows[net_flows['Predicitions'].isnull()]
 
-    # If row is above threshold, commit that row to the DB
-    db.session.commit()
-
-    #do Kddcup predictions
-    
-    feature_names = [str(col) for col in net_flows.columns]
-
-    error = None
-    y_score_kdd = None
-    predict_me = {feature_name: None for feature_name in original_dataset_features}
-        
-    # override the features we actually care about with ones submitted by the form.
-    try:
-        for feature_name in feature_names:
-           # submitted_val = net_flows[feature_name]
-           # if not submitted_val:
-               #raise InvalidUsageError('missing feature {}'.format(feature_name))
-            predict_me[feature_name] = net_flows[feature_name]
-            
-        predict_me = pd.DataFrame(predict_me, index=[0]) # it's not typical to build a 
-                                                             # # dataframe with only one row, but that's 
-                                                             # # what we're doing, so pandas wants us to 
-                                                             # # specify the index for that row with `index=[0]`
-        y_score_kdd = '{:.3f}'.format(model2.predict_proba(predict_me)[:,1][0])
-    except InvalidUsageError as e:
-        error = e
-
-    net_flows['Proba_KDD']=y_score_kdd[:0]
-    # Compare output to some threshold
-    threshold = .0001
-    to_alerts=net_flows.loc[net_flows['Proba_KDD'].astype(float)>threshold,:]
-    to_alerts = to_alerts.head()
+    to_alerts = to_alerts.head() # lol dirty hack
     to_alerts.to_sql(name='alertsDb', con=db.engine, if_exists = 'append', index=False)
 
     # If row is above threshold, commit that row to the DB
