@@ -264,7 +264,7 @@ def process_file(_id):
             'ctu_13': y_score_ctu[i],
             'kddcup': y_score_kddcup[i]
         }
-        _thresholded_predictions = _threshold_filter_predictions(single_net_flow_predictions)
+        _thresholded_predictions = _threshold_filter_predictions(_single_net_flow_predictions)
         predictions.append(json.dumps(_thresholded_predictions))
 
     net_flows['Predictions'] = pd.Series(predictions)
