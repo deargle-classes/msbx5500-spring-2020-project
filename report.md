@@ -15,11 +15,8 @@ In today's security operations environments, security professionals need a way t
   * **DDoS**: cyber-attack in which the perpetrator seeks to make a machine or network resource unavailable to its intended users by temporarily or indefinitely disrupting services of a host connected to the Internet.
   
   * **Data theft**: stealing computer-based information from an unknowing victim with the intent of compromising privacy or obtaining confidential information.
-  
   * **Spam**: unwanted, unsolicited digital communication, often an email, that gets sent out in bulk.
-  
   * **Malware**: any software intentionally designed to cause damage to a computer, server, client, or computer network.
-  
   * **Mine digital currencies**: type of currency that has no physical form and only exists in digital form/ virtual money and cryptocurrency.
 
 For this project we will use the [CTU-13 dataset](https://www.stratosphereips.org/datasets-ctu13) of botnet traffic that was captured by the CTU University, Czech Republic, in 2011. We will use predictive analytics to classify the netflow as malicious or benign and also provide the type of malicious attack (multiclass prediction).
