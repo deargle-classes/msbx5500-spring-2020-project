@@ -51,18 +51,23 @@ class Alert(db.Model):
     '''
     look at documentation for flask_sqlalchemy and for SQLAlchemy
     '''
+    __tablename__ = "alertsDb"
     id = db.Column(db.Integer, primary_key=True, nullable= False)
-    srcaddr= db.Column(db.String(39), nullable = False)
-    dstaddr=db.Column(db.String(39), nullable = False)
-    pkts=db.Column(db.Integer)
-    octets=db.Column(db.Integer)
-    srcport=db.Column(db.Integer, nullable = False)
-    dstport=db.Column(db.Integer, nullable = False)
-    prot=db.Column(db.String(7))
-    timestamp=db.Column(db.DateTime)
-    duration=db.Column(db.Float)
-    srcbytes=db.Column(db.Integer)
-    prob=db.Column(db.Float)
+    StartTime=db.Column(db.String(30))
+    Dur=db.Column(db.Float)
+    Proto=db.Column(db.String(7))
+    SrcAddr= db.Column(db.String(39), nullable = False)
+    Sport=db.Column(db.String(10), nullable = False)
+    Dir=db.Column(db.String(10))
+    DstAddr=db.Column(db.String(39), nullable = False)
+    Dport=db.Column(db.Integer, nullable = False)
+    State=db.Column(db.String(15))
+    sTos=db.Column(db.Float)
+    dTos=db.Column(db.Float)
+    TotPkts=db.Column(db.Integer)
+    TotBytes=db.Column(db.Integer)
+    SrcBytes=db.Column(db.Integer)
+    Proba=db.Column(db.Float)
     reso=db.Column(db.Integer, nullable = False, default = 0)
     time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())
 
@@ -146,35 +151,22 @@ def process_file(_id):
     net_flows = net_flows.drop('Label', axis=1)
     net_flows = net_flows.dropna()
 
-    X = net_flows.iloc[:,0:13]
-
-
     # Feed netflow(s) to model
     path = './pickle.pkl'
     with open(path, 'rb') as f:
         model = pkl.load(f)
 
     # Feed netflows to second model [todo]
-
+    net_flows= net_flows.iloc[:,0:13]
+    y_score = model.predict_proba(net_flows)
+    net_flows['Proba']=y_score[:,1]
     # Compare output to some threshold
-    threshold = .1
-    for i in net_flows.index.to_list():
-        y_score = model.predict_proba(net_flows.iloc[i,0:13])
-        if y_score[1] > threshold:    
-            new_alert = Alert(timestamp=net_flows.iloc[i,0],
-            duration=net_flows.iloc[i,1],
-            prot=net_flows.iloc[i,2],
-            srcaddr=net_flows.iloc[i,3],
-            srcport=net_flows.iloc[i,4],
-            dstaddr=net_flows.iloc[i,6],
-            dstport=net_flows.iloc[i,7], 
-            pkts=net_flows.iloc[i,11], 
-            octets=net_flows.iloc[i,12], 
-            srcbytes=net_flows.iloc[i,13],
-            prob=y_score[1])
-            db.add(new_alert)
-        # If row is above threshold, commit that row to the DB
-        db.commit()
+    threshold = .01
+    to_alerts=net_flows.loc[net_flows['Proba']>threshold,:]
+    to_alerts.to_sql(name='alertsDb', con=db.engine, if_exists = 'append')
+    
+    # If row is above threshold, commit that row to the DB
+    db.session.commit()
 
     return ('', 204)
 
@@ -209,9 +201,9 @@ def list_alerts():
     not flagged as "resolved."
     '''
 
-    alerts = [{'_id':i.id, 'n_packet': i.pkts,
-                'src_bytes':i.srcbytes, 'src_addr':i.srcaddr, 'dst_addr': i.dstaddr, 'Protocol':i.prot,
-                'Timestamp':i.timestamp, 'Probability':i.prob } for i in Alert.query.filter_by(reso=0).all() ]
+    alerts = [{'_id':i.id, 'n_packet': i.TotPkts,
+                'src_bytes':i.SrcBytes, 'src_addr':i.SrcAddr, 'dst_addr': i.DstAddr, 'Protocol':i.Proto,
+                'Timestamp':i.StartTime, 'Probability':i.Proba } for i in Alert.query.filter_by(reso=0).all() ]
     return jsonify(alerts)
 
 @app.route('/alerts/<string:_id>', methods=['DELETE'])
