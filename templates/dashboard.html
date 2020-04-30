@@ -45,6 +45,7 @@
           <th>Dst IP</th>
           <th>Protocol</th>
           <th>Timestamp</th>
+	  <th>Threat Prob.</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -56,6 +57,7 @@
           <td>{{alert.dst_addr}}</td>
           <td>{{alert.Protocol}}</td>
           <td>{{alert.Timestamp}}</td>
+	  <td>{{alert.Probability}}</td>
           <td>
             <button
               type="button"
