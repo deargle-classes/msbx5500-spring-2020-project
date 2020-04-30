@@ -259,7 +259,7 @@ def process_file(_id):
     y_score_kddcup = _get_kddcup99_predictions(net_flows)
 
     predictions = []
-    for i in net_flows.shape[0]:
+    for i in range(net_flows.shape[0]):
         _single_net_flow_predictions = {
             'ctu_13': y_score_ctu[i],
             'kddcup': y_score_kddcup[i]
