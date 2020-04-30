@@ -158,9 +158,9 @@ def process_file(_id):
 
     # Compare output to some threshold
     threshold = .1
-    for i in net_flows.index:
-        y_score = model.predict_proba(net_flows.iloc[i,:])
-        if y_score > threshold:    
+    for i in net_flows.index.to_list():
+        y_score = model.predict_proba(net_flows.iloc[i,0:13])
+        if y_score[1] > threshold:    
             new_alert = Alert(timestamp=net_flows.iloc[i,0],
             duration=net_flows.iloc[i,1],
             prot=net_flows.iloc[i,2],
@@ -171,7 +171,7 @@ def process_file(_id):
             pkts=net_flows.iloc[i,11], 
             octets=net_flows.iloc[i,12], 
             srcbytes=net_flows.iloc[i,13],
-            prob=y_score)
+            prob=y_score[1])
             db.add(new_alert)
         # If row is above threshold, commit that row to the DB
         db.commit()
