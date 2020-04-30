@@ -16,6 +16,48 @@ app = Flask(__name__)
 # add cross-origin allow to all routes
 CORS(app)
 
+original_dataset_features = ['duration',
+ 'protocol_type',
+ 'service',
+ 'flag',
+ 'src_bytes',
+ 'dst_bytes',
+ 'land',
+ 'wrong_fragment',
+ 'urgent',
+ 'hot',
+ 'num_failed_logins',
+ 'logged_in',
+ 'lnum_compromised',
+ 'lroot_shell',
+ 'lsu_attempted',
+ 'lnum_root',
+ 'lnum_file_creations',
+ 'lnum_shells',
+ 'lnum_access_files',
+ 'lnum_outbound_cmds',
+ 'is_host_login',
+ 'is_guest_login',
+ 'count',
+ 'srv_count',
+ 'serror_rate',
+ 'srv_serror_rate',
+ 'rerror_rate',
+ 'srv_rerror_rate',
+ 'same_srv_rate',
+ 'diff_srv_rate',
+ 'srv_diff_host_rate',
+ 'dst_host_count',
+ 'dst_host_srv_count',
+ 'dst_host_same_srv_rate',
+ 'dst_host_diff_srv_rate',
+ 'dst_host_same_src_port_rate',
+ 'dst_host_srv_diff_host_rate',
+ 'dst_host_serror_rate',
+ 'dst_host_srv_serror_rate',
+ 'dst_host_rerror_rate',
+ 'dst_host_srv_rerror_rate']
+
 # convenience class for throwing api errors in valid format
 # https://flask.palletsprojects.com/en/1.1.x/patterns/apierrors/
 class InvalidUsage(Exception):
@@ -173,6 +215,27 @@ def process_file(_id):
 
     # If row is above threshold, commit that row to the DB
     db.session.commit()
+
+        # error = None
+    # y_pred = None
+    # if request.method == 'POST':
+        # predict_me = {feature_name: None for feature_name in original_dataset_features}
+        
+        # # override the features we actually care about with ones submitted by the form.
+        # try:
+            # for feature_name in feature_names:
+                # submitted_val = request.form[feature_name]
+                # if not submitted_val:
+                    # raise InvalidUsageError('missing feature {}'.format(feature_name))
+                # predict_me[feature_name] = request.form[feature_name]
+            
+            # predict_me = pd.DataFrame(predict_me, index=[0]) # it's not typical to build a 
+                                                             # # dataframe with only one row, but that's 
+                                                             # # what we're doing, so pandas wants us to 
+                                                             # # specify the index for that row with `index=[0]`
+            # y_pred = '{:.3f}'.format(model.predict_proba(predict_me)[:,1][0])
+        # except InvalidUsageError as e:
+            # error = e
 
 
     return ('', 204)
