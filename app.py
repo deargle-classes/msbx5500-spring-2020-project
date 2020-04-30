@@ -11,6 +11,7 @@ import pandas as pd
 from bson.objectid import ObjectId
 import pickle as pkl
 import sklearn
+import json
 
 app = Flask(__name__)
 # add cross-origin allow to all routes
@@ -153,7 +154,6 @@ def upload_file(filename):
 class InvalidUsageError(Exception):
     pass
 
-threshold = 0.001
 thresholds = {
     'kddcup_threshold': 0.001, # use later
     'ctu_13_threshold': 0.001 # use later
@@ -265,17 +265,15 @@ def process_file(_id):
             'kddcup': y_score_kddcup[i]
         }
         _thresholded_predictions = _threshold_filter_predictions(single_net_flow_predictions)
-        predictions.append(_thresholded_predictions)
+        predictions.append(json.dumps(_thresholded_predictions))
 
-    net_flows['Predictions'] = predictions
-    to_alerts = net_flows[net_flows['Predicitions'].isnull()]
+    net_flows['Predictions'] = pd.Series(predictions)
+    # If row is above threshold, commit that row to the DB
+    to_alerts = net_flows[net_flows['Predicitions'].notnull()]
 
     to_alerts = to_alerts.head() # lol dirty hack
     to_alerts.to_sql(name='alertsDb', con=db.engine, if_exists = 'append', index=False)
-
-    # If row is above threshold, commit that row to the DB
     db.session.commit()
-
     return ('', 204)
 
 @app.route('/files.json', methods=['GET'])
