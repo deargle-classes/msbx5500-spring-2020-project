@@ -148,6 +148,9 @@ def upload_file(filename):
     mongo.save_file(filename, the_file)
     return ('', 204)
 
+class InvalidUsageError(Exception):
+    pass
+
 @app.route('/files/process/<string:_id>', methods=['GET'])
 def process_file(_id):
     '''
@@ -205,8 +208,8 @@ def process_file(_id):
 
     # Feed netflows to second model [todo]
     net_flows= net_flows.iloc[:,0:13]
-    y_score = model.predict_proba(net_flows)
-    net_flows['Proba']=y_score[:,1]
+    y_score_ctu = model.predict_proba(net_flows)
+    net_flows['Proba']=y_score_ctu[:,1]
     # Compare output to some threshold
     threshold = .0001
     to_alerts=net_flows.loc[net_flows['Proba']>threshold,:]
@@ -216,27 +219,28 @@ def process_file(_id):
     # If row is above threshold, commit that row to the DB
     db.session.commit()
 
-        # error = None
-    # y_pred = None
-    # if request.method == 'POST':
-        # predict_me = {feature_name: None for feature_name in original_dataset_features}
+    #do Kddcup predictions
+    feature_names = [str(name) for name in net_flows.split(',')]
+
+    error = None
+    y_score_kdd = None
+    predict_me = {feature_name: None for feature_name in original_dataset_features}
         
-        # # override the features we actually care about with ones submitted by the form.
-        # try:
-            # for feature_name in feature_names:
-                # submitted_val = request.form[feature_name]
-                # if not submitted_val:
-                    # raise InvalidUsageError('missing feature {}'.format(feature_name))
-                # predict_me[feature_name] = request.form[feature_name]
+    # override the features we actually care about with ones submitted by the form.
+    try:
+        for feature_name in feature_names:
+            submitted_val = net_flows[feature_name]
+            if not submitted_val:
+                raise InvalidUsageError('missing feature {}'.format(feature_name))
+            predict_me[feature_name] = net_flows[feature_name]
             
-            # predict_me = pd.DataFrame(predict_me, index=[0]) # it's not typical to build a 
+        predict_me = pd.DataFrame(predict_me, index=[0]) # it's not typical to build a 
                                                              # # dataframe with only one row, but that's 
                                                              # # what we're doing, so pandas wants us to 
                                                              # # specify the index for that row with `index=[0]`
-            # y_pred = '{:.3f}'.format(model.predict_proba(predict_me)[:,1][0])
-        # except InvalidUsageError as e:
-            # error = e
-
+        y_score_kdd = '{:.3f}'.format(model2.predict_proba(predict_me)[:,1][0])
+    except InvalidUsageError as e:
+        error = e
 
     return ('', 204)
 
