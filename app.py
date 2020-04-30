@@ -209,10 +209,10 @@ def process_file(_id):
     # Feed netflows to second model [todo]
     net_flows= net_flows.iloc[:,0:13]
     y_score_ctu = model.predict_proba(net_flows)
-    net_flows['Proba']=y_score_ctu[:,1]
+    net_flows['Proba_CTU']=y_score_ctu[:,1]
     # Compare output to some threshold
     threshold = .0001
-    to_alerts=net_flows.loc[net_flows['Proba']>threshold,:]
+    to_alerts=net_flows.loc[net_flows['Proba_CTU']>threshold,:]
     to_alerts = to_alerts.head()
     to_alerts.to_sql(name='alertsDb', con=db.engine, if_exists = 'append', index=False)
 
@@ -242,6 +242,16 @@ def process_file(_id):
         y_score_kdd = '{:.3f}'.format(model2.predict_proba(predict_me)[:,1][0])
     except InvalidUsageError as e:
         error = e
+
+    net_flows['Proba_KDD']=y_score_kdd[:,1]
+    # Compare output to some threshold
+    threshold = .0001
+    to_alerts=net_flows.loc[net_flows['Proba_KDD']>threshold,:]
+    to_alerts = to_alerts.head()
+    to_alerts.to_sql(name='alertsDb', con=db.engine, if_exists = 'append', index=False)
+
+    # If row is above threshold, commit that row to the DB
+    db.session.commit()
 
     return ('', 204)
 
