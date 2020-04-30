@@ -156,6 +156,11 @@ def process_file(_id):
     with open(path, 'rb') as f:
         model = pkl.load(f)
 
+    # Feeding KDD in
+    path = './LogisticRegression.pkl'
+    with open(path, 'rb') as f:
+        model2 = pkl.load(f)
+
     # Feed netflows to second model [todo]
     net_flows= net_flows.iloc[:,0:13]
     y_score = model.predict_proba(net_flows)
