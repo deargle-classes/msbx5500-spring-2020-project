@@ -269,7 +269,7 @@ def process_file(_id):
 
     net_flows['Predictions'] = pd.Series(predictions)
     # If row is above threshold, commit that row to the DB
-    to_alerts = net_flows[net_flows['Predicitions'].notnull()]
+    to_alerts = net_flows[net_flows['Predictions'].notnull()]
 
     to_alerts = to_alerts.head() # lol dirty hack
     to_alerts.to_sql(name='alertsDb', con=db.engine, if_exists = 'append', index=False)
