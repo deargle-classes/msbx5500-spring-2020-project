@@ -173,10 +173,10 @@
         let _id = event.target.dataset.id;
         fetch(`/files/process/${_id}`)
         .then(handleErrors)
+        // .then( (response) => {
+        //   return response.json()
+        // })
         .then( (response) => {
-          return response.json()
-        })
-        .then( (result) => {
           this.get_alerts() // this should trigger an update of the files list...
         })
         .catch( (error) => {

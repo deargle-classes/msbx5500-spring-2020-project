@@ -60,7 +60,7 @@ class Alert(db.Model):
     Sport=db.Column(db.String(10), nullable = False)
     Dir=db.Column(db.String(10))
     DstAddr=db.Column(db.String(39), nullable = False)
-    Dport=db.Column(db.Integer, nullable = False)
+    Dport=db.Column(db.String(10), nullable = False)
     State=db.Column(db.String(15))
     sTos=db.Column(db.Float)
     dTos=db.Column(db.Float)
@@ -68,7 +68,7 @@ class Alert(db.Model):
     TotBytes=db.Column(db.Integer)
     SrcBytes=db.Column(db.Integer)
     Proba=db.Column(db.Float)
-    reso=db.Column(db.Integer, nullable = False, default = 0)
+    reso=db.Column(db.String(1), server_default = '0')
     time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())
 
 ###########
@@ -149,7 +149,7 @@ def process_file(_id):
     net_flows_bytesIO = BytesIO(net_flows_bytes)
     net_flows = pd.read_csv(net_flows_bytesIO)
     net_flows = net_flows.drop('Label', axis=1)
-    net_flows = net_flows.dropna()
+    net_flows = net_flows.fillna(0)
 
     # Feed netflow(s) to model
     path = './pickle.pkl'
@@ -161,10 +161,11 @@ def process_file(_id):
     y_score = model.predict_proba(net_flows)
     net_flows['Proba']=y_score[:,1]
     # Compare output to some threshold
-    threshold = .01
+    threshold = .0001
     to_alerts=net_flows.loc[net_flows['Proba']>threshold,:]
-    to_alerts.to_sql(name='alertsDb', con=db.engine, if_exists = 'append')
-    
+    to_alerts = to_alerts.head()
+    to_alerts.to_sql(name='alertsDb', con=db.engine, if_exists = 'append', index=False)
+
     # If row is above threshold, commit that row to the DB
     db.session.commit()
 
@@ -203,8 +204,10 @@ def list_alerts():
     '''
 
     alerts = [{'_id':i.id, 'n_packet': i.TotPkts,
-                'src_bytes':i.SrcBytes, 'src_addr':i.SrcAddr, 'dst_addr': i.DstAddr, 'Protocol':i.Proto,
-                'Timestamp':i.StartTime, 'Probability':i.Proba } for i in Alert.query.filter_by(reso=0).all() ]
+                'src_bytes':i.TotBytes, 'src_addr':i.SrcAddr, 'dst_addr': i.DstAddr, 'Protocol':i.Proto,
+                'Timestamp':i.StartTime, 'Probability':i.Proba }
+                for i in Alert.query.filter_by(reso='0').all() ]
+
     return jsonify(alerts)
 
 @app.route('/alerts/<string:_id>', methods=['DELETE'])
@@ -218,6 +221,6 @@ def resolve_alert(_id):
     else could you "undelete" something?
     '''
     update=Alert.query.filter_by(id = _id).first()
-    update.reso=1
+    update.reso='1'
     db.session.commit()
     return ('', 204)
