@@ -220,7 +220,8 @@ def process_file(_id):
     db.session.commit()
 
     #do Kddcup predictions
-    feature_names = [str(name) for name in net_flows.split(',')]
+    
+    feature_names = [str(col) for col in net_flows.columns]
 
     error = None
     y_score_kdd = None
@@ -229,9 +230,9 @@ def process_file(_id):
     # override the features we actually care about with ones submitted by the form.
     try:
         for feature_name in feature_names:
-            submitted_val = net_flows[feature_name]
-            if not submitted_val:
-                raise InvalidUsageError('missing feature {}'.format(feature_name))
+           # submitted_val = net_flows[feature_name]
+           # if not submitted_val:
+               #raise InvalidUsageError('missing feature {}'.format(feature_name))
             predict_me[feature_name] = net_flows[feature_name]
             
         predict_me = pd.DataFrame(predict_me, index=[0]) # it's not typical to build a 
