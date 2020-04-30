@@ -309,7 +309,7 @@ def list_alerts():
 
     alerts = [{'_id':i.id, 'n_packet': i.TotPkts,
                 'src_bytes':i.TotBytes, 'src_addr':i.SrcAddr, 'dst_addr': i.DstAddr, 'Protocol':i.Proto,
-                'Timestamp':i.StartTime, 'Probability':i.Proba }
+                'Timestamp':i.StartTime, 'Predictions':i.Predictions }
                 for i in Alert.query.filter_by(reso='0').all() ]
 
     return jsonify(alerts)
