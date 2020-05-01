@@ -56,7 +56,7 @@ TODO: need some help on how the sampling methodology for CTU-13 was done
 All CTU-13 models were trained using the capture20110810.binetflow file from the [Stratosphere Research Library]( https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-42/detailed-bidirectional-flow-labels/), where a *.binetflow* is a bidrectional NetFlow file generated with [Argus](https://www.systutorials.com/docs/linux/man/8-argus/).
 
 #### Model 1 - First Pass RandomForest
-
+#### Preprocessing
 1. Data is read in from the binetflow file as a CSV format.
 2. Rows containing "NA" are dropped
 3. The first 15 features are selected for training
@@ -64,23 +64,17 @@ All CTU-13 models were trained using the capture20110810.binetflow file from the
 5. The categorical features: Protocol, Direction, and State are one-hot encoded
 
 #### Model 2 - Resampled RandomForest
-
-1. Data is read in from the binetflow file as a CSV format.
-2. *Put Stuff Jason Did Here*
-    - What libraries were used for preprocessing/ what libraries were used to complete the entire modeling process
-    - Preprocessing
-    - Column tranformation (list features used)
-      - Imputing of data
-      - OneHotEncoding
-    - Numeric transformation (list features used)
-      - Scaling of the data
-      - Imputing of the data
-    - SMOTE, Upsampling, Downsampling
-    - Feature extraction
-3. Rows containing "NA" are dropped
-4. The first **14**(??) features are selected for training
-5. The test data is split for training, using a .5 test size split
-6. The categorical features: Protocol, Direction, and State are one-hot encoded
+#### Preprocessing
+1. Rows containing "NA" are dropped
+2. The first **14**(??) features are selected for training
+3. The first 15 features are selected for training
+4. Python libraries used to complete modeling
+   - pandas, numpy, sklearn, imblearn, collections
+5. SMOTE, Upsampling, Downsampling
+6. Categorical features used: 'Proto', 'Dir', 'State'
+7. OneHotEncoding
+8. Classifier: Random Forest
+9. The test data is split for training, using a .5 test size split
 
 #### app.py: METHOD - process_file(_id)
 
@@ -99,7 +93,6 @@ All CTU-13 models were trained using the capture20110810.binetflow file from the
 #### CTU-13 model
 
 The model built for the CTU-13 dataset was originally a random forest trained on CTU example data. However, this model was poor because the original training data was imbalanced. To fix this, we upsampled and downsampled the minority and majority classes to extract a more balanced set. After this, we again ran the random forest to get a better fitted model and pickled that.
-
 
 ### Model Evaluation
 
