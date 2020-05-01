@@ -85,9 +85,8 @@ All CTU-13 models were trained using the capture20110810.binetflow file from the
 #### app.py: METHOD - process_file(_id)
 
 1. User uploaded .pcap files are fetched from the GridFS Mongo Database
-2. This .pcap file is converted into a bytestream using argus
-	- [argus.conf](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/argus.conf)
-	- *TODO: fill in argus details better*
+2. This .pcap file is converted into a bytestream using *[argus ra](https://www.systutorials.com/docs/linux/man/1-ra/)*, a tool to read and categorize network flow data from stdin. 
+	- Argus is configured according to [argus.conf](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/argus.conf)
 3. The bytestream is placed into a buffer with BufferIO
 4. The buffer is read to a pd dataframe
 5. The "Label" column is dropped from the dataframe
@@ -107,7 +106,7 @@ The model used for the Kddcup dataset was
 
 ### Model Evaluation
 
-## CTU-13 scoring metrics
+#### CTU-13 scoring metrics
 
 1. Confusion Matrix
 **insert confusion matrix here**
@@ -119,7 +118,7 @@ The model used for the Kddcup dataset was
 	* Recall - 
 	* F-Score - 
 	
-## Kddcup99 scoring metrics
+#### Kddcup99 scoring metrics
 
 1. Confusion Matrix
 **insert confusion matrix here**
@@ -133,7 +132,7 @@ The model used for the Kddcup dataset was
   
 ### Deployment
 
-## Tools used for deployment
+#### Tools used for deployment
 1. Docker
 2. Heroku
 Each team member shall deploy the final repo individually.
