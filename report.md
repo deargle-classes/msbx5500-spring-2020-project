@@ -51,11 +51,44 @@ Each netflow will be ran against both models, leading to two predictions. The CT
 
 ### Data Preparation
 
+TODO: need some help on how the sampling methodology for CTU-13 was done
+
+All CTU-13 models were trained using the capture20110810.binetflow file from the [Stratosphere Research Library]( https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-42/detailed-bidirectional-flow-labels/).
+
+#### Model 1 - First Pass RandomForest
+
+	1. Data is read in from the binetflow file as a CSV format.
+	2. Rows containing "NA" are dropped
+	2. The first 15 features are selected for training
+	3. The test data is split for training, using a .5 test size split
+	4. The categorical features: Protocol, Direction, and State are one-hot encoded
+
+#### Model 2 - Resampled RandomForest
+
+	2. Data is read in from the binetflow file as a CSV format.
+	1. *Put Stuff Jason Did Here*
+	2. Rows containing "NA" are dropped
+	2. The first **14**(??) features are selected for training
+	3. The test data is split for training, using a .5 test size split
+	4. The categorical features: Protocol, Direction, and State are one-hot encoded
+
+#### app.py: METHOD - process_file(_id)
+
+	1. User uploaded .pcap files are fetched from the GridFS Mongo Database
+	2. This .pcap file is converted into a bytestream using argus
+		- *TODO: fill in argus details better*
+	3. The bytestream is placed into a buffer with BufferIO
+	4. The buffer is read to a pd dataframe
+	5. The "Label" column is dropped from the dataframe
+	6. "NA" values are filled with 0
+	7. For Kddcup99: the features from the dataframe are read into a array of feature names
+	8. For each feature in the feature name array, build a new array to be saved as a dataframe with those features and respective data columns
+
 ### Modeling
 
 #### CTU-13 model
 
-The model build for the CTU-13 dataset was
+The model built for the CTU-13 dataset was
 
 #### Kddcup99 model
 
