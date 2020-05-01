@@ -265,7 +265,7 @@ def process_file(_id):
             'kddcup': y_score_kddcup[i]
         }
         _thresholded_predictions = _threshold_filter_predictions(_single_net_flow_predictions)
-        predictions.append(json.dumps(_thresholded_predictions))
+        predictions.append(json.dumps(_thresholded_predictions) if _thresholded_predictions else None)
 
     net_flows['Predictions'] = pd.Series(predictions)
     # If row is above threshold, commit that row to the DB
