@@ -53,7 +53,7 @@ Each netflow will be ran against both models, leading to two predictions. The CT
 
 TODO: need some help on how the sampling methodology for CTU-13 was done
 
-All CTU-13 models were trained using the capture20110810.binetflow file from the [Stratosphere Research Library]( https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-42/detailed-bidirectional-flow-labels/).
+All CTU-13 models were trained using the capture20110810.binetflow file from the [Stratosphere Research Library]( https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-42/detailed-bidirectional-flow-labels/), where a *.binetflow* is a bidrectional NetFlow file generated with [Argus](https://www.systutorials.com/docs/linux/man/8-argus/).
 
 #### Model 1 - First Pass RandomForest
 
