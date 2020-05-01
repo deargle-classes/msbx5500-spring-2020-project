@@ -107,14 +107,14 @@ The model used for the Kddcup dataset was
 ### Model Evaluation
 
 #### CTU-13 scoring metrics (resampled data)
-
-1. Confusion Matrix
 ![alt text](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/images/ctu-13cm.PNG)
    - Model Score - 
    - Accuracy - 
    - Precision - 
    - Recall - 
-   - F-Score - 
+   - F-Score -
+#### CTU-13 Confusion Matrix (resampled data)
+![alt text](add image here)
    
 ### Deployment
 
