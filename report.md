@@ -135,6 +135,7 @@ The model used for the Kddcup dataset was
 #### Tools used for deployment
 1. Docker
 2. Heroku
+
 Each team member shall deploy the final repo individually.
 
 Deployment should be hosted through Heroku, using a Docker image to register the image for Heroku deployment.
