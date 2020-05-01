@@ -97,11 +97,14 @@ The model built for the CTU-13 dataset was originally a random forest trained on
 ### Model Evaluation
 
 #### CTU-13 scoring metrics and Confusion Matrix Non-Normalized (resampled data)
-![alt text](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/images/ctu-13cm2.PNG)
-   
-### Deployment
+<table align="center"><tr><td align="center" width="9999">
+<img src="/images/ctu-13cm2.PNG" align="center" height="300" width="300" alt="Project icon" >
+</td></tr></table>
 
+### Deployment
+<table align="center"><tr><td align="center" width="9999">
 <img src="/images/Blank Diagram.png" align="center" height="200" width="300" alt="Project icon" >
+</td></tr></table>
 
 #### Tools used for deployment
 1. GitHub
