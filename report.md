@@ -96,6 +96,8 @@ The model built for the CTU-13 dataset was originally a random forest trained on
 ### Model Evaluation
 
 #### CTU-13 scoring metrics and Confusion Matrix Non-Normalized (resampled data)
+Because of the large amount of resampling needed to be done, the model was not hypertuned and was not tested on a full size training set. The implications of this can be seen in the metrics, we don't have very high recall on our true positives. This makes creating a threshold for the api difficult, but at least gives some insight into how we can improve the model for a future project.
+
 <table align="center"><tr><td align="center" width="9999">
 <img src="/images/ctu-13cm2.PNG" align="center" height="300" width="300" alt="Project icon" >
 </td></tr></table>
