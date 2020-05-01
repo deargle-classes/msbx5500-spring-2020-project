@@ -101,9 +101,14 @@ The model built for the CTU-13 dataset was originally a random forest trained on
    
 ### Deployment
 
+<img src="/images/Blank Diagram.png" align="center" height="200" width="300" alt="Project icon" >
+
 #### Tools used for deployment
-1. Docker
-2. Heroku
+1. GitHub
+2. GCP
+3. Docker
+4. Heroku
+
 
 Each team member shall deploy the final repo individually.
 
