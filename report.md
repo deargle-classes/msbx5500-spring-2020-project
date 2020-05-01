@@ -76,6 +76,7 @@ All CTU-13 models were trained using the capture20110810.binetflow file from the
 
 1. User uploaded .pcap files are fetched from the GridFS Mongo Database
 2. This .pcap file is converted into a bytestream using argus
+	- [argus.conf](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/argus.conf)
 	- *TODO: fill in argus details better*
 3. The bytestream is placed into a buffer with BufferIO
 4. The buffer is read to a pd dataframe
