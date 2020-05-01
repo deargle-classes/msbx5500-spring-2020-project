@@ -66,7 +66,6 @@ All CTU-13 models were trained using the capture20110810.binetflow file from the
 #### Model 2 - Resampled RandomForest
 #### Preprocessing
 1. Rows containing "NA" are dropped
-2. The first **14**(??) features are selected for training
 3. The first 15 features are selected for training
 4. Python libraries used to complete modeling
    - pandas, numpy, sklearn, imblearn, collections
@@ -115,10 +114,5 @@ The model built for the CTU-13 dataset was originally a random forest trained on
 
 Each team member shall deploy the final repo individually.
 
-Deployment should be hosted through Heroku, using a Docker image to register the image for Heroku deployment.
-
-TODO:
-- Probably need more info above
-- Planning, monitoring, review of deployment results?
-- Over/Undersample data in pickle
+Deployment (for small files only) should be hosted through Heroku, using a Docker image to register the image for Heroku deployment.
 
