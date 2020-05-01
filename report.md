@@ -67,6 +67,16 @@ All CTU-13 models were trained using the capture20110810.binetflow file from the
 
 1. Data is read in from the binetflow file as a CSV format.
 2. *Put Stuff Jason Did Here*
+	* What libraries were used for preprocessing/ what libraries were used to complete the entire modeling process
+	* Preprocessing
+	* Column tranformation (list features used)
+		* Imputing of data
+		* OneHotEncoding
+	* Numeric transformation (list features used)
+		* Scaling of the data
+		* Imputing of the data
+	* SMOTE, Upsampling, Downsampling
+	* Feature extraction
 3. Rows containing "NA" are dropped
 4. The first **14**(??) features are selected for training
 5. The test data is split for training, using a .5 test size split
@@ -75,8 +85,9 @@ All CTU-13 models were trained using the capture20110810.binetflow file from the
 #### app.py: METHOD - process_file(_id)
 
 1. User uploaded .pcap files are fetched from the GridFS Mongo Database
-2. This .pcap file is converted into a bytestream using *[argus ra](https://www.systutorials.com/docs/linux/man/1-ra/)*, a tool to read and categorize network flow data from stdin. 
-	- Argus is configured according to [argus.conf](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/argus.conf)
+2. This .pcap file is converted into a bytestream using argus
+	- [argus.conf](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/argus.conf)
+	- *TODO: fill in argus details better*
 3. The bytestream is placed into a buffer with BufferIO
 4. The buffer is read to a pd dataframe
 5. The "Label" column is dropped from the dataframe
@@ -95,9 +106,36 @@ The model built for the CTU-13 dataset was
 The model used for the Kddcup dataset was
 
 ### Model Evaluation
+
+## CTU-13 scoring metrics
+
+1. Confusion Matrix
+**insert confusion matrix here**
+	* TPR - 
+	* FPR - 
+	* TNR - 
+	* Accuracy - 
+	* Precision - 
+	* Recall - 
+	* F-Score - 
+	
+## Kddcup99 scoring metrics
+
+1. Confusion Matrix
+**insert confusion matrix here**
+	* TPR - 
+	* FPR - 
+	* TNR - 
+	* Accuracy - 
+	* Precision - 
+	* Recall - 
+	* F-Score - 
   
 ### Deployment
 
+## Tools used for deployment
+1. Docker
+2. Heroku
 Each team member shall deploy the final repo individually.
 
 Deployment should be hosted through Heroku, using a Docker image to register the image for Heroku deployment.
