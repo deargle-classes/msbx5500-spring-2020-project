@@ -1,11 +1,9 @@
 from flask import Flask, request, render_template, jsonify
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 from flask_pymongo import PyMongo
 import gridfs
 import os
 import subprocess
-import datetime
 from io import BytesIO
 import pandas as pd
 from bson.objectid import ObjectId
@@ -88,31 +86,10 @@ def handle_invalid_usage(error):
 # get psql db up. quickstart here: https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
-db = SQLAlchemy(app)
 
-class Alert(db.Model):
-    '''
-    look at documentation for flask_sqlalchemy and for SQLAlchemy
-    '''
-    __tablename__ = "alertsDb"
-    id = db.Column(db.Integer, primary_key=True, nullable= False)
-    StartTime=db.Column(db.String(30))
-    Dur=db.Column(db.Float)
-    Proto=db.Column(db.String(7))
-    SrcAddr= db.Column(db.String(39), nullable = False)
-    Sport=db.Column(db.String(10), nullable = False)
-    Dir=db.Column(db.String(10))
-    DstAddr=db.Column(db.String(39), nullable = False)
-    Dport=db.Column(db.String(10), nullable = False)
-    State=db.Column(db.String(15))
-    sTos=db.Column(db.Float)
-    dTos=db.Column(db.Float)
-    TotPkts=db.Column(db.Integer)
-    TotBytes=db.Column(db.Integer)
-    SrcBytes=db.Column(db.Integer)
-    Predictions=db.Column(db.String)
-    reso=db.Column(db.String(1), server_default = '0')
-    time_resolved=db.Column(db.DateTime, onupdate=datetime.datetime.now())
+from models import db, NetFlow, PredictiveModel, Prediction
+db.init_app(app)
+
 
 ###########
 ### MONGODB
@@ -272,7 +249,8 @@ def process_file(_id):
     to_alerts = net_flows[net_flows['Predictions'].notnull()]
 
     to_alerts = to_alerts.head() # lol dirty hack
-    to_alerts.to_sql(name='alertsDb', con=db.engine, if_exists = 'append', index=False)
+
+    to_alerts.to_sql(name=Alert.__table__.name, con=db.engine, if_exists = 'append', index=False)
     db.session.commit()
     return ('', 204)
 
