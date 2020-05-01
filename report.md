@@ -98,7 +98,7 @@ All CTU-13 models were trained using the capture20110810.binetflow file from the
 
 #### CTU-13 model
 
-The model built for the CTU-13 dataset was
+The model built for the CTU-13 dataset was originally a random forest trained on CTU example data. However, this model was poor because the original training data was imbalanced. To fix this, we upsampled and downsampled the minority and majority classes to extract a more balanced set. After this, we again ran the random forest to get a better fitted model and pickled that.
 
 #### Kddcup99 model
 
@@ -106,15 +106,8 @@ The model used for the Kddcup dataset was
 
 ### Model Evaluation
 
-#### CTU-13 scoring metrics (resampled data)
-![alt text](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/images/ctu-13cm.PNG)
-   - Model Score - 
-   - Accuracy - 
-   - Precision - 
-   - Recall - 
-   - F-Score -
-#### CTU-13 Confusion Matrix (resampled data)
-![alt text](add image here)
+#### CTU-13 scoring metrics and Confusion Matrix Non-Normalized (resampled data)
+![alt text](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/images/ctu-13cm2.PNG)
    
 ### Deployment
 
