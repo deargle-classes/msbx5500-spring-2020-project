@@ -120,6 +120,7 @@ Because of the large amount of resampling needed to be done, the model was not h
 3. Docker
 4. Heroku
 
+The threshold set for deployment for CTU-13 was .3
 
 Each team member shall deploy the final repo individually.
 
