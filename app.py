@@ -160,7 +160,7 @@ thresholds = {
 }
 
 # load ctu-13 model
-path = './pickle.pkl'
+path = './resampled-pickle.pkl'
 with open(path, 'rb') as f:
     model_ctu_13 = pkl.load(f)
 
