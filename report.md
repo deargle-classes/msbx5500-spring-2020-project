@@ -103,7 +103,7 @@ The model built for the CTU-13 dataset was originally a random forest trained on
 
 ### Deployment
 <table align="center"><tr><td align="center" width="9999">
-<img src="/images/Blank Diagram.png" align="center" height="200" width="300" alt="Project icon" >
+<img src="/images/paas.png" align="center" height="200" width="300" alt="Project icon" >
 </td></tr></table>
 
 #### Tools used for deployment
