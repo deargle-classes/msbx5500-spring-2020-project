@@ -100,9 +100,6 @@ All CTU-13 models were trained using the capture20110810.binetflow file from the
 
 The model built for the CTU-13 dataset was originally a random forest trained on CTU example data. However, this model was poor because the original training data was imbalanced. To fix this, we upsampled and downsampled the minority and majority classes to extract a more balanced set. After this, we again ran the random forest to get a better fitted model and pickled that.
 
-#### Kddcup99 model
-
-The model used for the Kddcup dataset was
 
 ### Model Evaluation
 
