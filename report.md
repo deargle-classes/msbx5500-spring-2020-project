@@ -67,16 +67,16 @@ All CTU-13 models were trained using the capture20110810.binetflow file from the
 
 1. Data is read in from the binetflow file as a CSV format.
 2. *Put Stuff Jason Did Here*
-	* What libraries were used for preprocessing/ what libraries were used to complete the entire modeling process
-	* Preprocessing
-	* Column tranformation (list features used)
-		* Imputing of data
-		* OneHotEncoding
-	* Numeric transformation (list features used)
-		* Scaling of the data
-		* Imputing of the data
-	* SMOTE, Upsampling, Downsampling
-	* Feature extraction
+    - What libraries were used for preprocessing/ what libraries were used to complete the entire modeling process
+    - Preprocessing
+    - Column tranformation (list features used)
+      - Imputing of data
+      - OneHotEncoding
+    - Numeric transformation (list features used)
+      - Scaling of the data
+      - Imputing of the data
+    - SMOTE, Upsampling, Downsampling
+    - Feature extraction
 3. Rows containing "NA" are dropped
 4. The first **14**(??) features are selected for training
 5. The test data is split for training, using a .5 test size split
@@ -110,25 +110,25 @@ The model used for the Kddcup dataset was
 
 1. Confusion Matrix
 **insert confusion matrix here**
-	* TPR - 
-	* FPR - 
-	* TNR - 
-	* Accuracy - 
-	* Precision - 
-	* Recall - 
-	* F-Score - 
+   - TPR - 
+   - FPR - 
+   - TNR - 
+   - Accuracy - 
+   - Precision - 
+   - Recall - 
+   - F-Score - 
 	
 #### Kddcup99 scoring metrics
 
 1. Confusion Matrix
 **insert confusion matrix here**
-	* TPR - 
-	* FPR - 
-	* TNR - 
-	* Accuracy - 
-	* Precision - 
-	* Recall - 
-	* F-Score - 
+   - TPR - 
+   - FPR - 
+   - TNR - 
+   - Accuracy - 
+   - Precision - 
+   - Recall - 
+   - F-Score - 
   
 ### Deployment
 
