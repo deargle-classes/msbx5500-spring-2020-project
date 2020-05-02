@@ -120,7 +120,7 @@ Because of the large amount of resampling needed to be done, the model was not h
 3. Docker
 4. Heroku
 
-The threshold set for deployment for CTU-13 was .3
+The threshold set for deployment for CTU-13 was **0.25550653879194696**, which is the threshold that maximizes the F1 score for our CTU-13 model.
 
 Each team member shall deploy the final repo individually.
 

@@ -155,8 +155,8 @@ class InvalidUsageError(Exception):
     pass
 
 thresholds = {
-    'kddcup_threshold': 0.001, # use later
-    'ctu_13_threshold': 0.001 # use later
+    'kddcup_threshold': 0.6, # use later
+    'ctu_13_threshold': 0.255506 # use later
 }
 
 # load ctu-13 model
