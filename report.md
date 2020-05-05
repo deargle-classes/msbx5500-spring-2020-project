@@ -81,16 +81,18 @@ Finally, the final features that we trained on were as follows:
 
 ### Model Evaluation
 
-#### CTU-13 scoring metrics and Confusion Matrix Non-Normalized (resampled data)
-Because of the large amount of resampling needed to be done, the model was not hypertuned and was not tested on a full size training set. The implications of this can be seen in the metrics, we don't have very high recall on our true positives. This makes creating a threshold for the api difficult, but at least gives some insight into how we can improve the model for a future project.
+#### Overview
 
+After running our three models on the data, we got average results with the Logistic Regression model. However, we got very strong results with both the Random Forest and Gradient Boosting models. A breakdown of the metrics for all models is shown below.
+
+Figure 1:
 <table align="center"><tr><td align="center" width="9999">
-<img src="/images/ctu-13cm2.PNG" align="center" height="300" width="300" alt="Project icon" >
+<img src="/images/Screen Shot 2020-05-05 at 2.57.29 PM.PNG" align="center" height="300" width="300" alt="Project icon" >
 </td></tr></table>
 
-
+Figure 2:
 <table align="center"><tr><td align="center" width="9999">
-<img src="/images/ctu-13roc.png" align="center" height="300" width="300" alt="Project icon" >
+<img src="/images/Screen Shot 2020-05-05 at 2.57.46 PM.png" align="center" height="300" width="300" alt="Project icon" >
 </td></tr></table>
 
 
