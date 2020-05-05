@@ -51,47 +51,33 @@ Each netflow will be ran against both models, leading to two predictions. The CT
 
 ### Data Preparation
 
-TODO: need some help on how the sampling methodology for CTU-13 was done
-
 All CTU-13 models were trained using the capture20110810.binetflow file from the [Stratosphere Research Library]( https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-42/detailed-bidirectional-flow-labels/), where a *.binetflow* is a bidrectional NetFlow file generated with [Argus](https://www.systutorials.com/docs/linux/man/8-argus/).
 
-#### Model 1 - First Pass RandomForest
-#### Preprocessing
-1. Data is read in from the binetflow file as a CSV format.
-2. Rows containing "NA" are dropped
-3. The first 15 features are selected for training
-4. The test data is split for training, using a .5 test size split
-5. The categorical features: Protocol, Direction, and State are one-hot encoded
-
-#### Model 2 - Resampled RandomForest
-#### Preprocessing
-1. Rows containing "NA" are dropped
-3. The first 15 features are selected for training
-4. Python libraries used to complete modeling
-   - pandas, numpy, sklearn, imblearn, collections
-5. SMOTE, Upsampling, Downsampling
-6. Categorical features used: 'Proto', 'Dir', 'State'
-7. OneHotEncoding
-8. Classifier: Random Forest
-9. The test data is split for training, using a .5 test size split
-
-#### app.py: METHOD - process_file(_id)
-
-1. User uploaded .pcap files are fetched from the GridFS Mongo Database
-2. This .pcap file is converted into a bytestream using *[argus ra](https://www.systutorials.com/docs/linux/man/1-ra/)*, a tool to read and categorize network flow data from stdin.
-	- Argus is configured according to [argus.conf](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/argus.conf)
-3. The bytestream is placed into a buffer with BufferIO
-4. The buffer is read to a pd dataframe
-5. The "Label" column is dropped from the dataframe
-6. "NA" values are filled with 0
-7. For Kddcup99: the features from the dataframe are read into a array of feature names
-8. For each feature in the feature name array, build a new array to be saved as a dataframe with those features and respective data columns
+For the CTU-13 model, we needed to remove any NAs in the dataset. To do this, our team dropped all rows that contained an NA. For preprocessing, we set up a pipeline that took our categorical features and OneHotEncoded them in order for them to be ready to be fit to the model.
 
 ### Modeling
 
-#### CTU-13 model
+#### CTU-13 Models
 
-The model built for the CTU-13 dataset was originally a random forest trained on CTU example data. However, this model was poor because the original training data was imbalanced. To fix this, we upsampled and downsampled the minority and majority classes to extract a more balanced set. After this, we again ran the random forest to get a better fitted model and pickled that.
+The first model built for the CTU-13 dataset was a Random Forest Classifier. A Random Forest Classifier is an ensemble algorithm that generates a large number of decision trees, and aggregates them to get a strong prediction for each class. The reason this algorithm is highly effective is because each generated tree carries a low correlation from tree to tree. Some trees may be poor predictors, but others will be strong, which means the aggregate ensemble will be more accurate than individual trees.
+
+The second model we built for the CTU-13 dataset was Logistic Regression. Logistic Regression is one of the most common machine learning algorithms for classification problems. A logistic regression algorithm uses a Sigmoid function, which maps values between 0 and 1. We can use logistic regression to find probabilities of certain classes.
+
+The third model we built for the CTU-13 dataset was Gradient Boosted Method (GBM). Gradient boosting methods are similar to Random Forests, in that they build an ensemble of trees. However, the key difference is that the Gradient Boosting algorithm builds iteratively. Gradient Boosting builds a tree and combines the results from the previous tree right away, in an effort to be more predictive. Random Forest combines all trees at the end. Gradient Boosting Methods also have loss functions that can be tuned to get better results.
+
+#### Parameters
+
+For all three models, the same version of scikit learn was used for all models(0.22.2). For the Logistic Regression and Gradient Boosting models, all of the default parameters were used. For the Random Forest model, our team changed min_samples_leaf=10. This is done to ensure we do not have one case per leaf, which would give us an overfitted model.
+
+Next, our data was very imbalanced and thus needed to be resampled. We did this using SMOTE which creates similar samples of the minority class in the dataset. This method makes the minority class and makes it equal to the majority class. Once this was completed, we were able to perform our test train split on the data. We did this using scikit-learn's function test_train_split(), which assigns a random sample of the data into the test data. For this split, we chose a percentage of 20%. We feel that 20% is a good hold out percentage, given that the data was balanced using SMOTE. After the split, our training data contained 81,388 rows, while our test data contained 16,277 rows.
+
+#### Features
+Finally, the final features that we trained on were as follows:
+
+| StartTime | Dur | Proto | SrcAddr | Sport | Dir | DstAddr | Dport | State | sTos | dTos | TotPkts | TotBytes | SrcBytes | Label |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 2011/08/10 09:46:53.047277 | 3550.182373 | udp | 212.50.71.179 | 39678 | <-> | 147.32.84.229 | 13363 | CON | 0 | 0 | 12 | 875 | 473 | flow=Background-UDP-Established |
+
 
 ### Model Evaluation
 
@@ -113,6 +99,18 @@ Because of the large amount of resampling needed to be done, the model was not h
 <table align="center"><tr><td align="center" width="9999">
 <img src="/images/paas.png" align="center" height="200" width="300" alt="Project icon" >
 </td></tr></table>
+
+#### app.py: METHOD - process_file(_id)
+
+1. User uploaded .pcap files are fetched from the GridFS Mongo Database
+2. This .pcap file is converted into a bytestream using *[argus ra](https://www.systutorials.com/docs/linux/man/1-ra/)*, a tool to read and categorize network flow data from stdin.
+	- Argus is configured according to [argus.conf](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/argus.conf)
+3. The bytestream is placed into a buffer with BufferIO
+4. The buffer is read to a pd dataframe
+5. The "Label" column is dropped from the dataframe
+6. "NA" values are filled with 0
+7. For Kddcup99: the features from the dataframe are read into a array of feature names
+8. For each feature in the feature name array, build a new array to be saved as a dataframe with those features and respective data columns
 
 #### Tools used for deployment
 1. GitHub
