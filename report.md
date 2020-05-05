@@ -29,12 +29,7 @@ The [CTU-13 dataset](https://www.stratosphereips.org/datasets-ctu13) consists of
 | 2011/08/10 09:46:53.047277 | 3550.182373 | udp | 212.50.71.179 | 39678 | <-> | 147.32.84.229 | 13363 | CON | 0 | 0 | 12 | 875 | 473 | flow=Background-UDP-Established |
 
 #### Kddcup99 dataset
-The [Kddcup99](https://datahub.io/machine-learning/kddcup99) dataset is a 10% subsample of data used at the 1999 KDD Cup, used to distinguish between "bad" connections (attacks/intrusions) and "good" (normal) connections. To be more specific, the target variable was to determine if a given net flow was a DDoS attack, or not. There were four main categories of attacks in the KDD data:
-
-  * **DDoS**: Denial of Service attack
-  * **R2L**: Gaining unauthorized access from a remote machine (e.g. guessing a password)
-  * **U2R**: Gaining unauthorized access into a superuser (root) account
-  * **Probing**: Performing surveillance tasks (e.g. port scanning)
+The [Kddcup99](https://datahub.io/machine-learning/kddcup99) dataset is a 10% subsample of data used at the 1999 KDD Cup, used to distinguish between "bad" connections (attacks/intrusions) and "good" (normal) connections. To be more specific, the target variable was to determine if a given net flow was a DDoS attack, or not.
 
 The Kddcup99 dataset consists of 42 features, which can be seen [here](http://kdd.ics.uci.edu/databases/kddcup99/kddcup.names), and previewed below:
 
@@ -42,7 +37,7 @@ The Kddcup99 dataset consists of 42 features, which can be seen [here](http://kd
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 0 | tcp | http | SF | 181 | 5450 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 | 8 | 0.00 | 0.00 | 0.00 | 0.00 | 1.00 | 0.00 | 0.00 | 9 | 9 | 1.00 | 0.00 | 0.11 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | normal |
 
-The data consists of compressed TCP dump data from normal and malicious network traffic on a simulated U.S. Air Force LAN. Each connection is labeled as "normal" or an "attack" and "attacks" must fall under one of the four specific categories below:
+The data consists of compressed TCP dump data from normal and malicious network traffic on a simulated U.S. Air Force LAN. Each connection is labeled as "DDos Attack" or "Not a DDos Attack" and all attacks fall under one of the four specific categories below:
 
 * **DOS**: denial-of-service, e.g. syn flood;
 * **R2L**: unauthorized access from a remote machine, e.g. guessing password;
@@ -52,6 +47,7 @@ The data consists of compressed TCP dump data from normal and malicious network 
 For our use case we will be using this data to build a second model to determine whether or not a connection is malicious.
 
 Each netflow will be ran against both models, leading to two predictions. The CTU-13 model will be able to predict whether the netflow is a botnet according to the CTU-13 scenario used, while the Kddcup99 model will be able to predict whether it's one of 8 different malicious classes.
+
 
 ### Data Preparation
 
