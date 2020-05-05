@@ -2,18 +2,17 @@
 
 <img src="/images/Leeds Logo.jpg" align="center" width="500" alt="Project icon" >
 
-# MSBX-5500 Spring 2020 
+# MSBX-5500 Spring 2020
 
 ## Security Analytics Final Project
 </td></tr></table>
-
 
 ### Business Problem Understanding
 
 In today's security operations environments, security professionals need a way to efficiently and effectively understand their organizations network traffic. The answer to this is an automated process that will follow up on alerts to determine if network traffic is from a botnet. Botnets pose the following threats to an organizations network infrastructure:
 
   * **DDoS**: cyber-attack in which the perpetrator seeks to make a machine or network resource unavailable to its intended users by temporarily or indefinitely disrupting services of a host connected to the Internet.
-  
+
   * **Data theft**: stealing computer-based information from an unknowing victim with the intent of compromising privacy or obtaining confidential information.
   * **Spam**: unwanted, unsolicited digital communication, often an email, that gets sent out in bulk.
   * **Malware**: any software intentionally designed to cause damage to a computer, server, client, or computer network.
@@ -23,14 +22,19 @@ For this project we will use the [CTU-13 dataset](https://www.stratosphereips.or
 
 ### Data Understanding
 #### CTU-13 dataset
-The [CTU-13 dataset](https://www.stratosphereips.org/datasets-ctu13) consists of thirteen scenarios of different botnet samples captured in pcap files. For our use case we will be using the bidirectional netflow files which have the following features that will be used to train our model:
+The [CTU-13 dataset](https://www.stratosphereips.org/datasets-ctu13) consists of thirteen scenarios of different botnet samples captured in pcap files. Out of the thirteen scenarios, our team focused on [Scenario 1](https://mcfp.weebly.com/ctu-malware-capture-botnet-42.html). For our use case we will be using the bidirectional netflow files which have the following features that will be used to train our model:
 
 | StartTime | Dur | Proto | SrcAddr | Sport | Dir | DstAddr | Dport | State | sTos | dTos | TotPkts | TotBytes | SrcBytes | Label |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | 
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 2011/08/10 09:46:53.047277 | 3550.182373 | udp | 212.50.71.179 | 39678 | <-> | 147.32.84.229 | 13363 | CON | 0 | 0 | 12 | 875 | 473 | flow=Background-UDP-Established |
 
 #### Kddcup99 dataset
-The [Kddcup99](https://datahub.io/machine-learning/kddcup99) dataset is a 10% subsample of data used at the 1999 KDD Cup, used to distinguish between "bad" connections (attacks/instrusions) and "good" (normal) connections.
+The [Kddcup99](https://datahub.io/machine-learning/kddcup99) dataset is a 10% subsample of data used at the 1999 KDD Cup, used to distinguish between "bad" connections (attacks/intrusions) and "good" (normal) connections. To be more specific, the target variable was to determine if a given net flow was a DDoS attack, or not. There were four main categories of attacks in the KDD data:
+
+  * **DDoS**: Denial of Service attack
+  * **R2L**: Gaining unauthorized access from a remote machine (e.g. guessing a password)
+  * **U2R**: Gaining unauthorized access into a superuser (root) account
+  * **Probing**: Performing surveillance tasks (e.g. port scanning)
 
 The Kddcup99 dataset consists of 42 features, which can be seen [here](http://kdd.ics.uci.edu/databases/kddcup99/kddcup.names), and previewed below:
 
@@ -78,7 +82,7 @@ All CTU-13 models were trained using the capture20110810.binetflow file from the
 #### app.py: METHOD - process_file(_id)
 
 1. User uploaded .pcap files are fetched from the GridFS Mongo Database
-2. This .pcap file is converted into a bytestream using *[argus ra](https://www.systutorials.com/docs/linux/man/1-ra/)*, a tool to read and categorize network flow data from stdin. 
+2. This .pcap file is converted into a bytestream using *[argus ra](https://www.systutorials.com/docs/linux/man/1-ra/)*, a tool to read and categorize network flow data from stdin.
 	- Argus is configured according to [argus.conf](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/argus.conf)
 3. The bytestream is placed into a buffer with BufferIO
 4. The buffer is read to a pd dataframe
@@ -125,4 +129,3 @@ The threshold set for deployment for CTU-13 was **0.25550653879194696**, which i
 Each team member shall deploy the final repo individually.
 
 Deployment (for small files only) should be hosted through Heroku, using a Docker image to register the image for Heroku deployment.
-
