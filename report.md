@@ -86,14 +86,12 @@ Finally, the final features that we trained on were as follows:
 After running our three models on the data, we got average results with the Logistic Regression model. However, we got very strong results with both the Random Forest and Gradient Boosting models. A breakdown of the metrics for all models is shown below.
 
 Figure 1:
-<table align="center"><tr><td align="center" width="9999">
-<img src="/images/Screen Shot 2020-05-05 at 2.57.29 PM.PNG" align="center" height="300" width="300" alt="Project icon" >
-</td></tr></table>
+![Screen Shot 2020-05-05 at 2 53 57 PM](https://user-images.githubusercontent.com/56977428/81119974-0d4e9780-8ee9-11ea-99e1-ca26f68399a6.png)
+
 
 Figure 2:
-<table align="center"><tr><td align="center" width="9999">
-<img src="/images/Screen Shot 2020-05-05 at 2.57.46 PM.png" align="center" height="300" width="300" alt="Project icon" >
-</td></tr></table>
+![Screen Shot 2020-05-05 at 2 53 49 PM](https://user-images.githubusercontent.com/56977428/81120054-26efdf00-8ee9-11ea-9ae7-8f0fdc6b9896.png)
+
 
 
 
