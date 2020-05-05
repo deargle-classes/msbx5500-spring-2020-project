@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[154]:
+# In[38]:
 
 
 import pandas as pd
@@ -17,6 +17,13 @@ from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import classification_report, confusion_matrix, plot_confusion_matrix
+from sklearn.metrics import precision_recall_curve
+from sklearn.metrics import plot_precision_recall_curve
+from sklearn.metrics import average_precision_score
+from sklearn.metrics import log_loss
+from sklearn.metrics import roc_auc_score, roc_curve, auc
 from sklearn.ensemble import GradientBoostingClassifier
 from imblearn.over_sampling import SMOTENC
 from imblearn.under_sampling import RandomUnderSampler
@@ -38,37 +45,37 @@ except:
     pass
 
 
-# In[155]:
+# In[39]:
 
 
 data.head()
 
 
-# In[156]:
+# In[4]:
 
 
 data['Target'] = data['Label'].str.startswith('flow=From-Botnet').astype(int)
 
 
-# In[157]:
+# In[5]:
 
 
 targetno = data[data['Target']==0]
 
 
-# In[158]:
+# In[6]:
 
 
 targetyes = data[data['Target']==1]
 
 
-# In[159]:
+# In[7]:
 
 
 print('Percent Minority %f' % ((sum(data['Target'])/len(data['Target']))*100))
 
 
-# In[160]:
+# In[8]:
 
 
 targetno.shape
@@ -76,26 +83,26 @@ targetno.shape
 
 # # Smote takes too long with categoricals, so I manaully resampled due to computing power restrictions
 
-# In[161]:
+# In[18]:
 
 
 drop_indices = np.random.choice(targetno.index, 2740000, replace=False)
 targetno_new = targetno.drop(drop_indices)
 
 
-# In[162]:
+# In[19]:
 
 
 net_flows_new = targetno_new.append(targetyes)
 
 
-# In[163]:
+# In[20]:
 
 
 print('Percent Minority %f' % ((sum(net_flows_new['Target'])/len(net_flows_new['Target']))*100))
 
 
-# In[164]:
+# In[21]:
 
 
 net_flows = net_flows_new.dropna()
@@ -103,39 +110,39 @@ X = net_flows.iloc[:,0:14]
 y = net_flows['Target']
 
 
-# In[165]:
+# In[23]:
 
 
-print('Percent Minority %f' % ((sum(y_train)/len(y_train))*100))
+print('Percent Minority %f' % ((sum(y)/len(y))*100))
 
 
 # # Actually fitting smote
 
-# In[166]:
+# In[24]:
 
 
 categorics = ['StartTime', 'Proto', 'SrcAddr', 'Sport', 'Dir', 'DstAddr', 'Dport', 'State']
 
 
-# In[167]:
+# In[25]:
 
 
 cat_index = [net_flows.columns.get_loc(c) for c in categorics if c in X]
 
 
-# In[168]:
+# In[26]:
 
 
 sm = SMOTENC(random_state = 42, categorical_features=[0, 2, 3, 4, 5, 6, 7, 8])
 
 
-# In[169]:
+# In[27]:
 
 
 X_res, y_res = sm.fit_resample(X, y)
 
 
-# In[170]:
+# In[28]:
 
 
 print('Percent Minority %f' % ((sum(y_res)/len(y_res))*100))
@@ -143,13 +150,13 @@ print('Percent Minority %f' % ((sum(y_res)/len(y_res))*100))
 
 # # AAAANNNNDDD we're at a balanced dataset now
 
-# In[171]:
+# In[29]:
 
 
-X.columns
+X.shape
 
 
-# In[175]:
+# In[40]:
 
 
 numeric_features = ['Dur', 'TotPkts', 'TotBytes']
@@ -249,13 +256,13 @@ plt.legend()
 
 # # Threshold Stuffs
 
-# In[74]:
+# In[41]:
 
 
 print(thresholds)
 
 
-# In[75]:
+# In[42]:
 
 
 precision, recall, thresholds_2 = precision_recall_curve(y_test, y_score)
@@ -267,9 +274,15 @@ a = ma.mask_rows(a)
 f1 = hmean(a,axis=1)
 
 
-# In[76]:
+# In[43]:
 
 
 threshold_maximizing_F1 = thresholds[np.argmax(f1)]
 print('f1 optimizing threshold: {}'.format(threshold_maximizing_F1))
+
+
+# In[ ]:
+
+
+
 
