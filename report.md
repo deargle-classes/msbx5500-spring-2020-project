@@ -12,7 +12,6 @@
 In today's security operations environments, security professionals need a way to efficiently and effectively understand their organizations network traffic. The answer to this is an automated process that will follow up on alerts to determine if network traffic is from a botnet. Botnets pose the following threats to an organizations network infrastructure:
 
   * **DDoS**: cyber-attack in which the perpetrator seeks to make a machine or network resource unavailable to its intended users by temporarily or indefinitely disrupting services of a host connected to the Internet.
-
   * **Data theft**: stealing computer-based information from an unknowing victim with the intent of compromising privacy or obtaining confidential information.
   * **Spam**: unwanted, unsolicited digital communication, often an email, that gets sent out in bulk.
   * **Malware**: any software intentionally designed to cause damage to a computer, server, client, or computer network.
@@ -83,24 +82,45 @@ Finally, the final features that we trained on were as follows:
 
 #### Overview
 
-After running our three models on the data, we got average results with the Logistic Regression model. However, we got very strong results with both the Random Forest and Gradient Boosting models. A breakdown of the metrics for all models is shown below.
+After running our three models on the data, we got average results with the Logistic Regression model. However, we got very strong results with both the Random Forest and Gradient Boosting models. While we had two models that scored very well, we ended up choosing Random Forest as the best model for our dataset. A breakdown of the metrics for all models is shown below.
+
+In figures 1-3, we have shown two confusion matrices for each of our given models. First, the "True" label should be interpreted as the Actual outcome of the dataset. The "Predicted" label is interpreted as what this model is predicting. The 1's for this matrix refer to the given netflow being malicious, while the 0 suggests it is benign. The top matrix for each model reports the totals for each section, while the bottom matrix for each model reports the weights of each section. 
+
+In figures 4-5, we have the Precision-Recall plot (figure 4) and the ROC Curve (figure 5) shown. Lastly, in figure 6, we have a table that shows all of the models and their respective metrics we chose.
+
 
 Figure 1:
+
+In Figure 1, we see the two confusion matrices for the Logistic Regression model.
+
 ![Screen Shot 2020-05-05 at 4 27 40 PM](https://user-images.githubusercontent.com/56977428/81122048-5274c880-8eed-11ea-9ba3-3fd5b7070037.png)
 
 Figure 2:
+
+In Figure 2, we see the two confusion matrices for the Random Forest model.
+
 ![Screen Shot 2020-05-05 at 4 32 23 PM](https://user-images.githubusercontent.com/56977428/81122366-fa8a9180-8eed-11ea-9e74-0bae011f0d24.png)
 
 Figure 3:
+
+In Figure 3, we see the two confusion matrices for the Gradient Boosted model.
+
 ![Screen Shot 2020-05-05 at 4 33 03 PM](https://user-images.githubusercontent.com/56977428/81122408-12621580-8eee-11ea-8bd6-46cdcc1ea525.png)
 
 Figure 4:
+
+In Figure 4, we see our Precision-Recall plot for all three models. This plot summarizes the trade off between the Precision (Y-axis) and the Recall (X-Axis). Precision refers to the "positive predictive value" of the model; it describes how good a model is at predicting the positive class (the 1's). Recall refers to the "true positive rate", or the "hit rate" of the model. Recall is the ratio of true positives divided by the sum of true positives and false negatives. Both the Random Forest and the Gradient Boosted models scored very high on this plot, and this is one factor that led us to picking one of these for our final model.
 ![Screen Shot 2020-05-05 at 2 53 57 PM](https://user-images.githubusercontent.com/56977428/81119974-0d4e9780-8ee9-11ea-99e1-ca26f68399a6.png)
 
 Figure 5:
+
+In Figure 5, we have our ROC curve for all three models. In the ROC curve, the true positive rate (Y-axis) is plotted against the false positive rate (x-axis) for a number of different thresholds. Essentially, it shows the "hit rate" vs. "false alarm rate". Given our curve, the two best performing models were Random Forest and Gradient Boosted.
 ![Screen Shot 2020-05-05 at 2 53 49 PM](https://user-images.githubusercontent.com/56977428/81120054-26efdf00-8ee9-11ea-9ae7-8f0fdc6b9896.png)
 
 Figure 6:
+
+In Figure 6, a table was created to showcase all of the metrics we chose to test our models. In the table, "model score" refers to a scikit-learn function used which calculates the mean accuracy for the model. When looking at all of our metrics, Random Forest did slightly better than Gradient Boosting. This is the model we ended up choosing for deployment.
+
 | Name of Model       | Model Score | Average Precision | ROC AUC | Precision-Recall AUC |
 |---------------------|-------------|-------------------|---------|----------------------|
 | Logistic Regression | 0.638       | 0.493             | 0.546   | 0.493                |
