@@ -86,14 +86,26 @@ Finally, the final features that we trained on were as follows:
 After running our three models on the data, we got average results with the Logistic Regression model. However, we got very strong results with both the Random Forest and Gradient Boosting models. A breakdown of the metrics for all models is shown below.
 
 Figure 1:
-![Screen Shot 2020-05-05 at 2 53 57 PM](https://user-images.githubusercontent.com/56977428/81119974-0d4e9780-8ee9-11ea-99e1-ca26f68399a6.png)
-
+![Screen Shot 2020-05-05 at 4 27 40 PM](https://user-images.githubusercontent.com/56977428/81122048-5274c880-8eed-11ea-9ba3-3fd5b7070037.png)
 
 Figure 2:
+![Screen Shot 2020-05-05 at 4 32 23 PM](https://user-images.githubusercontent.com/56977428/81122366-fa8a9180-8eed-11ea-9e74-0bae011f0d24.png)
+
+Figure 3:
+![Screen Shot 2020-05-05 at 4 33 03 PM](https://user-images.githubusercontent.com/56977428/81122408-12621580-8eee-11ea-8bd6-46cdcc1ea525.png)
+
+Figure 4:
+![Screen Shot 2020-05-05 at 2 53 57 PM](https://user-images.githubusercontent.com/56977428/81119974-0d4e9780-8ee9-11ea-99e1-ca26f68399a6.png)
+
+Figure 5:
 ![Screen Shot 2020-05-05 at 2 53 49 PM](https://user-images.githubusercontent.com/56977428/81120054-26efdf00-8ee9-11ea-9ae7-8f0fdc6b9896.png)
 
-
-
+Figure 6:
+| Name of Model       | Model Score | Average Precision | ROC AUC | Precision-Recall AUC |
+|---------------------|-------------|-------------------|---------|----------------------|
+| Logistic Regression | 0.638       | 0.493             | 0.546   | 0.493                |
+| Random Forest       | 0.887       | 0.967             | 0.968   | 0.967                |
+| Gradient Boosting   | 0.890       | 0.952             | 0.956   | 0.953                |
 
 ### Deployment
 <table align="center"><tr><td align="center" width="9999">
