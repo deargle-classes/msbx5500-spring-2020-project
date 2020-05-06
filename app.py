@@ -170,7 +170,7 @@ with open(path, 'rb') as f:
     model_kddcup = pkl.load(f)
 
 def _get_ctu_13_predictions(net_flows):
-    net_flows= net_flows.iloc[:,0:13]
+    net_flows= net_flows.iloc[:,0:14]
     return model_ctu_13.predict_proba(net_flows)[:,1]
 
 def _get_kddcup99_predictions(net_flows):
