@@ -27,25 +27,7 @@ The [CTU-13 dataset](https://www.stratosphereips.org/datasets-ctu13) consists of
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 2011/08/10 09:46:53.047277 | 3550.182373 | udp | 212.50.71.179 | 39678 | <-> | 147.32.84.229 | 13363 | CON | 0 | 0 | 12 | 875 | 473 | flow=Background-UDP-Established |
 
-#### Kddcup99 dataset
-The [Kddcup99](https://datahub.io/machine-learning/kddcup99) dataset is a 10% subsample of data used at the 1999 KDD Cup, used to distinguish between "bad" connections (attacks/intrusions) and "good" (normal) connections. To be more specific, the target variable was to determine if a given net flow was a DDoS attack, or not.
 
-The Kddcup99 dataset consists of 42 features, which can be seen [here](http://kdd.ics.uci.edu/databases/kddcup99/kddcup.names), and previewed below:
-
-| duration | protocol_type | service | flag | src_bytes | dst_bytes | land | wrong_fragment | urgent | hot | num_failed_logins | logged_in | lnum_compromised | lroot_shell | lsu_attempted | lnum_root | lnum_file_creations | lnum_shells | lnum_access_files | lnum_outbound_cmds | is_host_login | is_guest_login | count | srv_count | serror_rate | srv_serror_rate | rerror_rate | srv_rerror_rate | same_srv_rate | diff_srv_rate | srv_diff_host_rate | dst_host_count | dst_host_srv_count | dst_host_same_srv_rate | dst_host_diff_srv_rate | dst_host_same_src_port_rate | dst_host_srv_diff_host_rate | dst_host_serror_rate | dst_host_srv_serror_rate | dst_host_rerror_rate | dst_host_srv_rerror_rate | label |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 0 | tcp | http | SF | 181 | 5450 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 8 | 8 | 0.00 | 0.00 | 0.00 | 0.00 | 1.00 | 0.00 | 0.00 | 9 | 9 | 1.00 | 0.00 | 0.11 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | normal |
-
-The data consists of compressed TCP dump data from normal and malicious network traffic on a simulated U.S. Air Force LAN. Each connection is labeled as "DDos Attack" or "Not a DDos Attack" and all attacks fall under one of the four specific categories below:
-
-* **DOS**: denial-of-service, e.g. syn flood;
-* **R2L**: unauthorized access from a remote machine, e.g. guessing password;
-* **U2R**: unauthorized access to local superuser (root) privileges, e.g., various "buffer overflow" attacks;
-* **probing**: surveillance and other probing, e.g., port scanning.
-
-For our use case we will be using this data to build a second model to determine whether or not a connection is malicious.
-
-Each netflow will be ran against both models, leading to two predictions. The CTU-13 model will be able to predict whether the netflow is a botnet according to the CTU-13 scenario used, while the Kddcup99 model will be able to predict whether it's one of 8 different malicious classes.
 
 
 ### Data Preparation
@@ -84,7 +66,7 @@ Finally, the final features that we trained on were as follows:
 
 After running our three models on the data, we got average results with the Logistic Regression model. However, we got very strong results with both the Random Forest and Gradient Boosting models. While we had two models that scored very well, we ended up choosing Random Forest as the best model for our dataset. A breakdown of the metrics for all models is shown below.
 
-In figures 1-3, we have shown two confusion matrices for each of our given models. First, the "True" label should be interpreted as the Actual outcome of the dataset. The "Predicted" label is interpreted as what this model is predicting. The 1's for this matrix refer to the given netflow being malicious, while the 0 suggests it is benign. The top matrix for each model reports the totals for each section, while the bottom matrix for each model reports the weights of each section. 
+In figures 1-3, we have shown two confusion matrices for each of our given models. First, the "True" label should be interpreted as the Actual outcome of the dataset. The "Predicted" label is interpreted as what this model is predicting. The 1's for this matrix refer to the given netflow being malicious, while the 0 suggests it is benign. The top matrix for each model reports the totals for each section, while the bottom matrix for each model reports the weights of each section.
 
 In figures 4-5, we have the Precision-Recall plot (figure 4) and the ROC Curve (figure 5) shown. Lastly, in figure 6, we have a table that shows all of the models and their respective metrics we chose.
 
@@ -132,7 +114,20 @@ In Figure 6, a table was created to showcase all of the metrics we chose to test
 <img src="/images/paas.png" align="center" height="200" width="300" alt="Project icon" >
 </td></tr></table>
 
-#### app.py: METHOD - process_file(_id)
+#### Tools used for deployment
+1. GitHub
+2. GCP
+3. Docker
+4. Heroku
+
+For this stage, we took our best performing model to pickle. From the model evaluation stages, we selected Random Forest because it had the best scores across the board, just edging out our Gradient Boosted model. Once this model is pickled, we can load it into our app.py document, which is explained below.
+
+The threshold set for deployment for CTU-13 was **0.25**, which is the threshold that maximizes the F1 score for our CTU-13 model.
+
+#### app.py: METHOD - process_file
+
+The app.py file is written using Flask which is seen ![here](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/app.py).
+
 
 1. User uploaded .pcap files are fetched from the GridFS Mongo Database
 2. This .pcap file is converted into a bytestream using *[argus ra](https://www.systutorials.com/docs/linux/man/1-ra/)*, a tool to read and categorize network flow data from stdin.
@@ -144,14 +139,14 @@ In Figure 6, a table was created to showcase all of the metrics we chose to test
 7. For Kddcup99: the features from the dataframe are read into a array of feature names
 8. For each feature in the feature name array, build a new array to be saved as a dataframe with those features and respective data columns
 
-#### Tools used for deployment
-1. GitHub
-2. GCP
-3. Docker
-4. Heroku
+#### KDD Cup 99 Data
 
-The threshold set for deployment for CTU-13 was **0.25550653879194696**, which is the threshold that maximizes the F1 score for our CTU-13 model.
+Also included inside of the app.py is a model already ![trained](https://github.com/deargle/security-analytics-deploy-model/blob/master/LogisticRegression.pkl) on the KDD Cup 99 data. The model uses a simple Logistic Regression to classify between a DDoS attack, or not.
 
-Each team member shall deploy the final repo individually.
+For our use case we will be using this data to build a second model to determine whether or not a connection is malicious.
 
-Deployment (for small files only) should be hosted through Heroku, using a Docker image to register the image for Heroku deployment.
+Each netflow will be ran against both models, leading to two predictions. The CTU-13 model will be able to predict whether the netflow is a botnet according to the CTU-13 scenario used, while the Kddcup99 model will be able to predict whether it's one of 8 different malicious classes.
+
+#### Use Case
+
+The end product of the flask app, with the best fitted model, is shown below. The use case is to predict if a given series of netflows identifies as malicious or benign, with the web app giving alerts if the netflow is above the threshold we stated above. Someone using this webapp to review netflow data can quickly spot potential malicious netflows and resolve them.
