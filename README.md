@@ -24,7 +24,7 @@ This repository is for the Final project for class MSBX5500 - Security Analytics
 
   5. If you want to check that all services are operating properly, use ```bash docker-compose ps``` in a new ssh tab. This command checks that all Docker services are working. All three services should be up and running.
 
-	6. Enter command: ```bash docker-compose run web python init_psql_db.py``` while the web application is being run.
+  6. Enter command: ```bash docker-compose run web python init_psql_db.py``` while the web application is being run.
 
   7. After this, navigate to your external IP listed in your instance and the web app should be displayed. NOTE: Be sure that it is going to Port 80, and that the connection is HTTP, and not HTTPS.
 
