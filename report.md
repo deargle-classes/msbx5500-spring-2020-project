@@ -9,7 +9,7 @@
 
 ### Business Problem Understanding
 
-In today's security operations environments, security professionals need a way to efficiently and effectively understand their organizations network traffic. The answer to this is an automated process that will follow up on alerts to determine if network traffic is from a botnet. Botnets pose the following threats to an organizations network infrastructure:
+In today's security operations environments, security professionals need a way to efficiently and effectively understand their organizations network traffic. The answer to this is an automated process that will generate alerts to determine if network traffic is from a botnet, so that a person can follow up on these alerts themselves. Our machine learning model will be able to recognize new attacks based on similar signatures it has seen in past data. Botnets pose the following threats to an organizations network infrastructure:
 
   * **DDoS**: cyber-attack in which the perpetrator seeks to make a machine or network resource unavailable to its intended users by temporarily or indefinitely disrupting services of a host connected to the Internet.
   * **Data theft**: stealing computer-based information from an unknowing victim with the intent of compromising privacy or obtaining confidential information.
@@ -17,24 +17,23 @@ In today's security operations environments, security professionals need a way t
   * **Malware**: any software intentionally designed to cause damage to a computer, server, client, or computer network.
   * **Mine digital currencies**: type of currency that has no physical form and only exists in digital form/ virtual money and cryptocurrency.
 
-For this project we will use the [CTU-13 dataset](https://www.stratosphereips.org/datasets-ctu13) of botnet traffic that was captured by the CTU University, Czech Republic, in 2011, along with the [Kddcup99](https://datahub.io/machine-learning/kddcup99) data set. We will use predictive analytics to classify the netflow as malicious or benign and also provide the type of malicious attack (multiclass prediction).
+For this project we will use the [CTU-13 dataset](https://www.stratosphereips.org/datasets-ctu13) of botnet traffic that was captured by the CTU University, Czech Republic, in 2011, along with the [Kddcup99](https://datahub.io/machine-learning/kddcup99) data set. We will use predictive analytics to classify the netflow as a botnet or not, and also provide the type of malicious attack.
 
 ### Data Understanding
 #### CTU-13 dataset
 The [CTU-13 dataset](https://www.stratosphereips.org/datasets-ctu13) consists of thirteen scenarios of different botnet samples captured in pcap files. Out of the thirteen scenarios, our team focused on [Scenario 1](https://mcfp.weebly.com/ctu-malware-capture-botnet-42.html). For our use case we will be using the bidirectional netflow files which have the following features that will be used to train our model:
 
-| StartTime | Dur | Proto | SrcAddr | Sport | Dir | DstAddr | Dport | State | sTos | dTos | TotPkts | TotBytes | SrcBytes | Label |
+| StartTime | Dur | Proto | SrcAddr | Sport | Dir | DstAddr | Dport | State | sTos | dTos | TotPkts | TotBytes | SrcBytes | Label|
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 2011/08/10 09:46:53.047277 | 3550.182373 | udp | 212.50.71.179 | 39678 | <-> | 147.32.84.229 | 13363 | CON | 0 | 0 | 12 | 875 | 473 | flow=Background-UDP-Established |
-
-
-
 
 ### Data Preparation
 
 All CTU-13 models were trained using the capture20110810.binetflow file from the [Stratosphere Research Library]( https://mcfp.felk.cvut.cz/publicDatasets/CTU-Malware-Capture-Botnet-42/detailed-bidirectional-flow-labels/), where a *.binetflow* is a bidrectional NetFlow file generated with [Argus](https://www.systutorials.com/docs/linux/man/8-argus/).
 
 For the CTU-13 model, we needed to remove any NAs in the dataset. To do this, our team dropped all rows that contained an NA. For preprocessing, we set up a pipeline that took our categorical features and OneHotEncoded them in order for them to be ready to be fit to the model.
+
+Lastly, our target variable had to be encoded to 1 and 0. Anything "from a botnet" was labeled as a 1. Anything else was labeled as 0.
 
 ### Modeling
 
@@ -50,12 +49,12 @@ The third model we built for the CTU-13 dataset was Gradient Boosted Method (GBM
 
 For all three models, the same version of scikit learn was used for all models(0.22.2). For the Logistic Regression and Gradient Boosting models, all of the default parameters were used. For the Random Forest model, our team changed min_samples_leaf=10. This is done to ensure we do not have one case per leaf, which would give us an overfitted model.
 
-Next, our data was very imbalanced and thus needed to be resampled. We did this using SMOTE which creates similar samples of the minority class in the dataset. This method makes the minority class and makes it equal to the majority class. Once this was completed, we were able to perform our test train split on the data. We did this using scikit-learn's function test_train_split(), which assigns a random sample of the data into the test data. For this split, we chose a percentage of 20%. We feel that 20% is a good hold out percentage, given that the data was balanced using SMOTE. After the split, our training data contained 81,388 rows, while our test data contained 16,277 rows.
+Next, our data was very imbalanced and thus needed to be resampled. We did this using [SMOTE](https://imbalanced-learn.readthedocs.io/en/stable/generated/imblearn.over_sampling.SMOTE.html) which creates similar samples of the minority class in the dataset. This method makes the minority class and makes it equal to the majority class. Once this was completed, we were able to perform our test train split on the data. We did this using scikit-learn's function test_train_split(), which assigns a random sample of the data into the test data. For this split, we chose a percentage of 20%. We feel that 20% is a good hold out percentage, given that the data was balanced using SMOTE. After the split, our training data contained 81,388 rows, while our test data contained 16,277 rows.
 
 #### Features
-Finally, the final features that we trained on were as follows:
+Finally, the final features that we trained on were as follows(shown with sample data from the dataset):
 
-| StartTime | Dur | Proto | SrcAddr | Sport | Dir | DstAddr | Dport | State | sTos | dTos | TotPkts | TotBytes | SrcBytes | Label |
+| StartTime | Dur | Proto | SrcAddr | Sport | Dir | DstAddr | Dport | State | sTos | dTos | TotPkts | TotBytes | SrcBytes |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 2011/08/10 09:46:53.047277 | 3550.182373 | udp | 212.50.71.179 | 39678 | <-> | 147.32.84.229 | 13363 | CON | 0 | 0 | 12 | 875 | 473 | flow=Background-UDP-Established |
 
@@ -64,30 +63,31 @@ Finally, the final features that we trained on were as follows:
 
 #### Overview
 
-After running our three models on the data, we got average results with the Logistic Regression model. However, we got very strong results with both the Random Forest and Gradient Boosting models. While we had two models that scored very well, we ended up choosing Random Forest as the best model for our dataset. A breakdown of the metrics for all models is shown below.
+After running our three models on the data, we got subpar results with the Logistic Regression model. If you refer to Figure 6, for example, the ROC AUC is just slightly above 0.50. This suggests the model is only slightly better than a flip of a coin to predict what the netflow is. However, we got very strong results with both the Random Forest and Gradient Boosting models. While we had two models that scored very well, we ended up choosing Random Forest as the best model for our dataset. A breakdown of the metrics for all models is shown below.
 
-In figures 1-3, we have shown two confusion matrices for each of our given models. First, the "True" label should be interpreted as the Actual outcome of the dataset. The "Predicted" label is interpreted as what this model is predicting. The 1's for this matrix refer to the given netflow being malicious, while the 0 suggests it is benign. The top matrix for each model reports the totals for each section, while the bottom matrix for each model reports the weights of each section.
+In Figures 1-3, we show two confusion matrices for each of our given models. First, the "True" label should be interpreted as the Actual outcome of the dataset. The "Predicted" label is interpreted as what this model is predicting. The 1's for this matrix refer to the given netflow being malicious, while the 0 suggests it is benign. The top matrix for each model reports the totals for each section, while the bottom matrix for each model reports the weights of each section.
 
-In figures 4-5, we have the Precision-Recall plot (figure 4) and the ROC Curve (figure 5) shown. Lastly, in figure 6, we have a table that shows all of the models and their respective metrics we chose.
+In Figures 4-5, we have the Precision-Recall plot (figure 4) and the ROC Curve (figure 5) shown. Lastly, in Figure 6, we have a table that shows all of the models and their respective metrics we chose.
 
 
 Figure 1:
 
-In Figure 1, we see the two confusion matrices for the Logistic Regression model.
+In Figure 1, we see the normalized confusion matrix for the Logistic Regression model. The threshold for this matrix was 0.5.
 
-![Screen Shot 2020-05-05 at 4 27 40 PM](https://user-images.githubusercontent.com/56977428/81122048-5274c880-8eed-11ea-9ba3-3fd5b7070037.png)
+![Screen Shot 2020-05-06 at 10 18 58 AM](https://user-images.githubusercontent.com/56977428/81201839-f9f00a80-8f82-11ea-9487-77d3ce0ad3c8.png)
 
 Figure 2:
 
-In Figure 2, we see the two confusion matrices for the Random Forest model.
+In Figure 2, we see the normalized confusion matrix for the Random Forest model. The threshold for this matrix was 0.5.
 
-![Screen Shot 2020-05-05 at 4 32 23 PM](https://user-images.githubusercontent.com/56977428/81122366-fa8a9180-8eed-11ea-9e74-0bae011f0d24.png)
+![Screen Shot 2020-05-06 at 10 19 41 AM](https://user-images.githubusercontent.com/56977428/81201903-12f8bb80-8f83-11ea-866e-e3b50934f6c1.png)
+
 
 Figure 3:
 
-In Figure 3, we see the two confusion matrices for the Gradient Boosted model.
+In Figure 3, we see the normalized confusion matrix for the Gradient Boosted model. The threshold for this matrix was 0.5.
 
-![Screen Shot 2020-05-05 at 4 33 03 PM](https://user-images.githubusercontent.com/56977428/81122408-12621580-8eee-11ea-8bd6-46cdcc1ea525.png)
+![Screen Shot 2020-05-06 at 10 20 20 AM](https://user-images.githubusercontent.com/56977428/81201967-2b68d600-8f83-11ea-96cb-3368a6538d7a.png)
 
 Figure 4:
 
@@ -101,9 +101,9 @@ In Figure 5, we have our ROC curve for all three models. In the ROC curve, the t
 
 Figure 6:
 
-In Figure 6, a table was created to showcase all of the metrics we chose to test our models. In the table, "model score" refers to a scikit-learn function used which calculates the mean accuracy for the model. When looking at all of our metrics, Random Forest did slightly better than Gradient Boosting. This is the model we ended up choosing for deployment.
+In Figure 6, a table was created to showcase all of the metrics we chose to test our models. In the table, "model score" refers to a scikit-learn function used which calculates the mean accuracy for the model. Mean accuracy refers to the accuracy of the model. When looking at all of our metrics, Random Forest did slightly better than Gradient Boosting on all metrics that lean towards positive predictions. The only metric that Random Forest did not do better on was the Model Score. In this business case, false positives are very time costly. Thus, Random Forest was our best model. This is the model we ended up choosing for deployment.
 
-| Name of Model       | Model Score | Average Precision | ROC AUC | Precision-Recall AUC |
+| Name of Model       | Model Score(Mean Accuracy) | Average Precision | ROC AUC | Precision-Recall AUC |
 |---------------------|-------------|-------------------|---------|----------------------|
 | Logistic Regression | 0.638       | 0.493             | 0.546   | 0.493                |
 | Random Forest       | 0.887       | 0.967             | 0.968   | 0.967                |
@@ -122,7 +122,7 @@ In Figure 6, a table was created to showcase all of the metrics we chose to test
 
 For this stage, we took our best performing model to pickle. From the model evaluation stages, we selected Random Forest because it had the best scores across the board, just edging out our Gradient Boosted model. Once this model is pickled, we can load it into our app.py document, which is explained below.
 
-The threshold set for deployment for CTU-13 was **0.25**, which is the threshold that maximizes the F1 score for our CTU-13 model.
+The threshold set for deployment for CTU-13 was **0.25**, which is the threshold that maximizes the F1 score for our CTU-13 model. To clarify, this is the threshold used to predict "from a botnet" or "not from a botnet".
 
 #### app.py: METHOD - process_file
 
@@ -141,9 +141,9 @@ The app.py file is written using Flask which is seen [here](https://github.com/d
 
 #### KDD Cup 99 Data
 
-Also included inside of the app.py is a model already [trained](https://github.com/deargle/security-analytics-deploy-model/blob/master/LogisticRegression.pkl) on the KDD Cup 99 data. The model uses a simple Logistic Regression to classify between a DDoS attack, or not. For more information on the details of the KDD Cup 99 Data, click [here](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/KDDinfo.md)
+Also included inside of the app.py is a model already [trained](https://github.com/deargle/security-analytics-deploy-model/blob/master/LogisticRegression.pkl) on the KDD Cup 99 data. The model uses a simple Logistic Regression to classify between a DDoS attack, or not. For more information on the details of the KDD Cup 99 Data, click [here](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/KDDinfo.md).
 
-Using this data, we will have a second model that we can use to test against netflows. Each netflow will be ran against both models, leading to two predictions. The CTU-13 model will be able to predict whether the netflow is a botnet according to the CTU-13 scenario used, while the Kddcup99 model will be able to predict whether it is a DDoS attack, or not, among 4 main classes.
+Using this data, we will have a second model that we can use to test against netflows. Each netflow will be ran against both models, leading to two predictions. The CTU-13 model will be able to predict whether the netflow is a botnet according to the CTU-13 scenario used, while the Kddcup99 model will be able to predict whether it is a DDoS attack, or not.
 
 #### Use Case
 
