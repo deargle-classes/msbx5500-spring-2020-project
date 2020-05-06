@@ -1,14 +1,5 @@
 ## MSBX5500 Final Project Repo Readme
 
-### Contributors
-  * Dave Eargle | Project Leader | [deargle](https://github.com/deargle)
-  * Junji Wiener | Contributor | [8Jun](https://github.com/8Jun)
-  * Alex Qaddourah | Contributor | [aqaddourah](https://github.com/aqaddourah)
-  * Matthew Kuchar | Contributor | [mtmrevolt](https://github.com/mtmrevolt)
-  * Jason Engel | Contributor | [birdsofjay](https://github.com/birdsofjay)
-  * Seth Grossman | Contributor | [Sethegrossman](https://github.com/Sethegrossman)
-  * Paul Telesca | Contributor | [shadow12490](https://github.com/shadow12490)
-
 ### Project Overview
 
 This repository is for the Final project for class MSBX5500 - Security Analytics in Python. The project was to train a machine learning model to make predictions on network traffic and deploy a web solution that would be used in a SOC setting. The project is described in depth in the [report.md](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/report.md).

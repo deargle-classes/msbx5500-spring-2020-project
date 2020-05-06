@@ -17,7 +17,7 @@ In today's security operations environments, security professionals need a way t
   * **Malware**: any software intentionally designed to cause damage to a computer, server, client, or computer network.
   * **Mine digital currencies**: type of currency that has no physical form and only exists in digital form/ virtual money and cryptocurrency.
 
-For this project we will use the [CTU-13 dataset](https://www.stratosphereips.org/datasets-ctu13) of botnet traffic that was captured by the CTU University, Czech Republic, in 2011, along with the [Kddcup99](https://datahub.io/machine-learning/kddcup99) data set. We will use predictive analytics to classify the netflow as a botnet or not, and also provide the type of malicious attack.
+For this project we will use the [CTU-13 dataset](https://www.stratosphereips.org/datasets-ctu13) of botnet traffic that was captured by the CTU University, Czech Republic, in 2011, along with the [Kddcup99](https://datahub.io/machine-learning/kddcup99) data set. We will use predictive analytics to classify the netflow as a botnet or not.
 
 ### Data Understanding
 #### CTU-13 dataset
