@@ -148,3 +148,7 @@ Using this data, we will have a second model that we can use to test against net
 #### Use Case
 
 The end product of the flask app, with the best fitted model, is shown below. It allows for pcap files to be uploaded and then processed through both models. Alerts will be shown in the top portion of the webpage The use case is to give two predictions for incoming netflows: the trained CTU model will predict if a given series of netflows identifies as malicious or benign, while the trained KDD model will predict if the netflows are DDoS or not. Both models will give alerts if the netflow is above the threshold we stated above (the threshold for the KDD model is listed inside app.py). Someone using this webapp to review netflow data can quickly spot potential malicious netflows and resolve them.
+
+![Screen Shot 2020-05-05 at 8 06 23 PM](https://user-images.githubusercontent.com/56977428/81132501-dfc71580-8f0b-11ea-9ddd-4bf2de957d29.png)
+
+![Screen Shot 2020-05-05 at 8 07 05 PM](https://user-images.githubusercontent.com/56977428/81132519-f9685d00-8f0b-11ea-886c-eaf6ed7efceb.png)
