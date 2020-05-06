@@ -126,7 +126,7 @@ The threshold set for deployment for CTU-13 was **0.25**, which is the threshold
 
 #### app.py: METHOD - process_file
 
-The app.py file is written using Flask which is seen ![here](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/app.py).
+The app.py file is written using Flask which is seen [here](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/app.py).
 
 
 1. User uploaded .pcap files are fetched from the GridFS Mongo Database
@@ -141,7 +141,7 @@ The app.py file is written using Flask which is seen ![here](https://github.com/
 
 #### KDD Cup 99 Data
 
-Also included inside of the app.py is a model already ![trained](https://github.com/deargle/security-analytics-deploy-model/blob/master/LogisticRegression.pkl) on the KDD Cup 99 data. The model uses a simple Logistic Regression to classify between a DDoS attack, or not. For more information on the details of the KDD Cup 99 Data, click ![here](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/KDDinfo.md)
+Also included inside of the app.py is a model already [trained](https://github.com/deargle/security-analytics-deploy-model/blob/master/LogisticRegression.pkl) on the KDD Cup 99 data. The model uses a simple Logistic Regression to classify between a DDoS attack, or not. For more information on the details of the KDD Cup 99 Data, click [here](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/KDDinfo.md)
 
 Using this data, we will have a second model that we can use to test against netflows. Each netflow will be ran against both models, leading to two predictions. The CTU-13 model will be able to predict whether the netflow is a botnet according to the CTU-13 scenario used, while the Kddcup99 model will be able to predict whether it is a DDoS attack, or not, among 4 main classes.
 
