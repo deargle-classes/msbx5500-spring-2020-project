@@ -141,12 +141,10 @@ The app.py file is written using Flask which is seen ![here](https://github.com/
 
 #### KDD Cup 99 Data
 
-Also included inside of the app.py is a model already ![trained](https://github.com/deargle/security-analytics-deploy-model/blob/master/LogisticRegression.pkl) on the KDD Cup 99 data. The model uses a simple Logistic Regression to classify between a DDoS attack, or not.
+Also included inside of the app.py is a model already ![trained](https://github.com/deargle/security-analytics-deploy-model/blob/master/LogisticRegression.pkl) on the KDD Cup 99 data. The model uses a simple Logistic Regression to classify between a DDoS attack, or not. For more information on the details of the KDD Cup 99 Data, click ![here](https://github.com/deargle-classes/msbx5500-spring-2020-project/blob/master/KDDinfo.md)
 
-For our use case we will be using this data to build a second model to determine whether or not a connection is malicious.
-
-Each netflow will be ran against both models, leading to two predictions. The CTU-13 model will be able to predict whether the netflow is a botnet according to the CTU-13 scenario used, while the Kddcup99 model will be able to predict whether it's one of 8 different malicious classes.
+Using this data, we will have a second model that we can use to test against netflows. Each netflow will be ran against both models, leading to two predictions. The CTU-13 model will be able to predict whether the netflow is a botnet according to the CTU-13 scenario used, while the Kddcup99 model will be able to predict whether it is a DDoS attack, or not, among 4 main classes.
 
 #### Use Case
 
-The end product of the flask app, with the best fitted model, is shown below. The use case is to predict if a given series of netflows identifies as malicious or benign, with the web app giving alerts if the netflow is above the threshold we stated above. Someone using this webapp to review netflow data can quickly spot potential malicious netflows and resolve them.
+The end product of the flask app, with the best fitted model, is shown below. It allows for pcap files to be uploaded and then processed through both models. Alerts will be shown in the top portion of the webpage The use case is to give two predictions for incoming netflows: the trained CTU model will predict if a given series of netflows identifies as malicious or benign, while the trained KDD model will predict if the netflows are DDoS or not. Both models will give alerts if the netflow is above the threshold we stated above (the threshold for the KDD model is listed inside app.py). Someone using this webapp to review netflow data can quickly spot potential malicious netflows and resolve them.
